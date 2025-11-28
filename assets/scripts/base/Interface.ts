@@ -10,6 +10,21 @@ export interface _CupInfo {
   colorIds: Array<number>; //长度为4
 }
 
+
+/** 一个串的四种颜色 */
+export interface BunchInfo {
+  colorIds: Array<number>; //长度为4
+}
+
+export interface BunchTopInfo {
+  /** 返回空位数量 */
+  emptyNum: number; //
+  /** 返回杯顶颜色ID */
+  topColorId: number; //
+  /** 返回杯顶颜色数量 */
+  topColorNum: number; //
+}
+
 /**
  *
  */

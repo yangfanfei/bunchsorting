@@ -25,8 +25,10 @@ export default class CoinMgr extends cc.Component {
     }
 
     setCoinLabel(){
-        console.log(" setCoinLabel: ",this.coinLabel," String: ",Global.getCurrentCoin().toString());
-        this.coinLabel.string = Global.getCurrentCoin().toString();
+        if(this.coinLabel)
+        {
+            this.coinLabel.string = Global.getCurrentCoin().toString();
+        }
     }
 
     getLabelPosition(){

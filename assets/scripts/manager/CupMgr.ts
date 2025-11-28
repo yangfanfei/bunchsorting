@@ -52,13 +52,12 @@ export default class CupMgr extends cc.Component {
     let _node = new cc.Node();
     _node.parent = this.node;
     this._waterFlow = _node.addComponent(WaterFlow);
-    this.startGameWithoutSetFinishState();
+    //this.startGameWithoutSetFinishState();
   }
 
   private selectedCup: Cup = null;
 
   private onClickCup(cup: Cup) {
-    console.log(" CupMgr.OnClickCup............ Cup： ",cup.getCupIndex());
     if(this.selectedCup)
     {
       console.log(" CupMgr.OnClickCup............ SelectedCup： ",this.selectedCup.getCupIndex());
@@ -471,16 +470,16 @@ export default class CupMgr extends cc.Component {
 
   protected start(): void {
     CupMgr.ins = this;
-    cc.director.on(events.Reset, this.resetLv, this);
-    cc.director.on(events.Back, this.undoAction, this);
-    cc.director.on(events.Start, this.startGame, this);
-    cc.director.on(events.AddTube, this.addcup, this);
+    //cc.director.on(events.Reset, this.resetLv, this);
+    //cc.director.on(events.Back, this.undoAction, this);
+    //cc.director.on(events.Start, this.startGame, this);
+    //cc.director.on(events.AddTube, this.addcup, this);
   }
   protected onDisable(): void {
-    cc.director.off(events.Reset, this.resetLv, this);
-    cc.director.off(events.Back, this.undoAction, this);
-    cc.director.off(events.Start, this.startGame, this);
-    cc.director.off(events.AddTube, this.addcup, this);
+    //cc.director.off(events.Reset, this.resetLv, this);
+    //cc.director.off(events.Back, this.undoAction, this);
+    //cc.director.off(events.Start, this.startGame, this);
+    //cc.director.off(events.AddTube, this.addcup, this);
   }
   private resetLv() {
     Global.action_list = [];

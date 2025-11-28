@@ -190,6 +190,8 @@ export default class GameView extends BaseView {
     if(this.isAllFinish == true){
       return;   
     }
+
+    console.log(" GameView... GameResult::: ");
     this.onceAdd = false
     Global.addLv();
     this.init();

@@ -22,6 +22,18 @@ export default class GameMgr extends cc.Component {
   @property(cc.Prefab)
   bunchPrefab: cc.Prefab = null;
 
+  @property(cc.Prefab)
+  flyEffectNode: cc.Prefab = null;
+
+  @property(cc.Node)
+  dishBg1: cc.Node = null;
+
+  @property(cc.Node)
+  dishBg2: cc.Node = null;
+
+  @property(cc.Node)
+  dishBg3: cc.Node = null;
+
   @property([cc.SpriteFrame])
   public bunchImgs: cc.SpriteFrame[] = [];
 
@@ -34,6 +46,7 @@ export default class GameMgr extends cc.Component {
   private layout_v: cc.Layout = null;
   private isPlaying:boolean = false;
   private lastSelectBunch: Bunch = null;
+  private tween: cc.Tween = null;
 
   onLoad() {
     if (CC_EDITOR) {
@@ -47,9 +60,15 @@ export default class GameMgr extends cc.Component {
 
   start() {
     cc.director.on(events.Start, this.startGame, this);
+    cc.director.on(events.Reset, this.resetLv, this);
+    cc.director.on(events.AddBunch, this.addBunch, this);
+    cc.director.on(events.Back, this.undoAction, this);
   }
   onDisable() {
     cc.director.off(events.Start, this.startGame, this);
+    cc.director.off(events.Reset, this.resetLv, this);
+    cc.director.off(events.AddBunch, this.addBunch, this);
+    cc.director.off(events.Back, this.undoAction, this);
   }
 
   /**
@@ -81,6 +100,71 @@ export default class GameMgr extends cc.Component {
     }*/
   }
 
+  private resetLv(){
+      this.startGame();
+  }
+
+  private undoAction(){
+  if (!this.checkCanUndo()) {
+      return;
+    }
+
+    let action = Global.action_list.pop();
+    if (action == null) {
+      return false;
+    }
+
+    console.log(" UndoAction.Data:: ",action);
+
+    let src = this.getBunchByIndex(action.from);
+    let dest = this.getBunchByIndex(action.to);
+
+    dest.removeTop(action.num);
+    src.addTop(action.colorId, action.num);
+    //let toCup = this._cups[to];
+    //let fromCup = this._cups[from];
+    /*let toCupIsFull = toCup.checkFinishImp(false);
+    let fromCupIsFull = fromCup.checkFinishImp(false);
+
+    /////// fall back resetCoin and tube state
+    if(toCupIsFull == true){
+      toCup.resetCheckFinishedState();
+      Global.subCoin(Global.tubeRewardCoin);
+      CoinMgr.ins.setCoinLabel();
+    }
+    if(fromCupIsFull == true){
+      fromCup.resetCheckFinishedState();
+      Global.subCoin(Global.tubeRewardCoin);
+      CoinMgr.ins.setCoinLabel();
+    }*/
+
+    //toCup.removeTopWaterImmediately(num);
+    //fromCup.addWaterImmediately(colorId, num);
+    return true;
+  }
+
+  addBunch() {
+    if (!this.checkCanAddBunch()) return;
+    if (this.lastSelectBunch) {
+      this.doSelect(this.lastSelectBunch, false); 
+      this.lastSelectBunch = null;
+    }
+
+    this.curCfg.push({ colorIds: [0, 0, 0, 0] });
+    this.createBunches();
+  }
+
+  private getBunchByIndex(val){
+    for(var i = 0; i < this.curBunchs.length; ++i){
+      var bunch = this.curBunchs[i]
+      if(bunch.getIndex() == val){
+        return bunch;
+      }
+    }
+
+    return null;
+  }
+
   protected initCfg() {
     this.curCfg = [];
     let  lv = Global.lv;
@@ -100,6 +184,14 @@ export default class GameMgr extends cc.Component {
     }
 
     console.log(" CupMgr.initCfg::::::: curLV:",lv," curCFG: ",this.curCfg);
+  }
+
+  public checkCanAddBunch() {
+    return  this.curCfg.length < Global.maxTube;
+  }
+
+  public checkCanUndo() {
+    return  Global.action_list.length > 0;
   }
 
   async createBunches() {
@@ -130,6 +222,8 @@ export default class GameMgr extends cc.Component {
 
       this.layout_v.node.zIndex = 1;
     }
+
+    this.layout_v.node.setPosition(new cc.Vec3(0, 65, 0));
 
     let layoutArr: Array<cc.Layout> = [];
 
@@ -173,14 +267,16 @@ export default class GameMgr extends cc.Component {
   
   createBunchIndexGroups(len: number) {
     let bunchGruoups: Array<Array<number>> = [];
+    let count = 1;
     if (len <= 4) {
       let idGroup: Array<number> = [];
       for (let i = 0; i < this.curBunchs.length; i++) {
         idGroup.push(i);
       }
       bunchGruoups.push(idGroup);
-    } else if (len <= 15) {
+    } else if (len <= 8) {
 
+      count = 2;
       let idGroup: Array<number> = [];
       let i = 0;
       let middleId = len / 2;
@@ -195,6 +291,76 @@ export default class GameMgr extends cc.Component {
       }
       bunchGruoups.push(idGroup);
       idGroup = [];
+    }
+    else
+    {
+      count = 3;
+      let id1 = 0;
+      let id2 = 0;
+      if(len == 13)
+      {
+        id1 = 5;
+        id2 = 4;
+      }
+      else if(len == 14)
+      {
+        id1 = 5;
+        id2 = 5;
+      }
+      else
+      {
+        id1 = len / 3;
+        id2 = len*2 / 3;
+      }
+
+      let idGroup: Array<number> = [];
+      let i = 0;
+      for (; i < id1; i++) {
+        idGroup.push(i);
+      }
+      bunchGruoups.push(idGroup);
+
+      idGroup = [];
+      for (; i < id2; i++) {
+        idGroup.push(i);
+      }
+      bunchGruoups.push(idGroup);
+
+      idGroup = [];
+      for (; i < len; i++) {
+        idGroup.push(i);
+      }
+      bunchGruoups.push(idGroup);
+    }
+
+    if(count == 1)
+    {
+      this.dishBg1.active = false;
+      this.dishBg3.active = false;
+      this.dishBg2.active = true;
+
+      this.dishBg1.setPosition(new cc.Vec3(0, 470, 0));
+      this.dishBg2.setPosition(new cc.Vec3(0, 60, 0));
+      this.dishBg3.setPosition(new cc.Vec3(0, -350, 0));
+    }
+    else if(count == 2)
+    {
+      this.dishBg3.active = false;
+      this.dishBg1.active = true;
+      this.dishBg2.active = true;
+
+      this.dishBg1.setPosition(new cc.Vec3(0, 260, 0));
+      this.dishBg2.setPosition(new cc.Vec3(0, -150, 0));
+    }
+    else if(count == 3)
+    {
+      this.dishBg3.active = true;
+      this.dishBg1.active = true;
+      this.dishBg2.active = true;
+
+      this.dishBg1.setPosition(new cc.Vec3(0, 470, 0));
+      this.dishBg2.setPosition(new cc.Vec3(0, 60, 0));
+      this.dishBg3.setPosition(new cc.Vec3(0, -350, 0));
     }
 
     return bunchGruoups;
@@ -290,9 +456,9 @@ export default class GameMgr extends cc.Component {
 
   private doSelect(bunch: Bunch, bool: boolean) {
     let pt = bunch.orignPt; 
-    let y = pt.y + (bool ? bunch.node.height * 0.2 : 0); 
+    let y = pt.y + (bool ? bunch.node.height * 0.1 : 0); 
     cc.tween(bunch.node).stop(); 
-    cc.tween(bunch.node).to(0.2, { y: y }).start(); 
+    cc.tween(bunch.node).to(0.1, { y: y }).start(); 
   }
 
   private checkMove(src: Bunch, dst: Bunch) {
@@ -314,19 +480,77 @@ export default class GameMgr extends cc.Component {
     var srcTopinfo = src.getTop();
     var destTopInfo = dst.getTop();
 
-    let pourNum = Math.min(srcTopinfo.topColorNum, destTopInfo.emptyNum);
+    let moveCount = Math.min(srcTopinfo.topColorNum, destTopInfo.emptyNum);
     let color = srcTopinfo.topColorId;
 
-    src.removeTop(pourNum);
-    dst.addTop(color, pourNum);
+    src.removeTop(moveCount);
+    //dst.addTop(color, moveCount);
 
     this.doSelect(this.lastSelectBunch, false);
     this.lastSelectBunch = null;
 
+    let srcPos = src.node.parent.convertToWorldSpaceAR(src.node.position);
+    srcPos = GameView.ins.effectRoot.convertToNodeSpaceAR(srcPos);
+    
+    let desPos3 = dst.node.parent.convertToWorldSpaceAR(dst.node.position);
+    desPos3 = GameView.ins.effectRoot.convertToNodeSpaceAR(desPos3);
+
+    let desPos1 = new cc.Vec3(srcPos.x, srcPos.y+210, srcPos.z);
+    let desPos2 = new cc.Vec3(desPos3.x, desPos3.y+210, desPos3.z);
+
+    console.log(" StartMove. destTopInfo:: ",destTopInfo);
+    /*if (Global.action_list.length == Global.action_step) {
+      Global.action_list.shift();
+    }
+    Global.action_list.push({
+      from: src.getIndex(),
+      to: dst.getIndex(),
+      colorId: color,
+      num: moveCount,
+    });
+
     if(this.checkAllFinish() == true){
       console.log(" AllFinish:::::::: Send.Event...........");
       cc.director.emit(events.LevelFinish);
-    }
+    }*/
+
+    let effectNode = cc.instantiate(this.flyEffectNode);
+    let effectSprite = effectNode.getComponent(cc.Sprite);
+    let sf = this.bunchImgs[color-1];
+    sf.getOriginalSize();
+    //console.log("  effectSprite. Size: ",effectSprite.spriteFrame.getOriginalSize(),
+    //" EffectSprite.Rect: ", effectSprite.spriteFrame.getRect() ," SF.Rect: ",sf.getRect());
+    effectSprite.spriteFrame = this.bunchImgs[color-1];
+    
+    effectNode.setPosition(srcPos);
+    GameView.ins.effectRoot.addChild(effectNode);
+
+    this.tween = cc
+      .tween(effectNode)
+      .to(0.35, { x: desPos1.x, y: desPos1.y }) 
+      .to(0.35, { x: desPos2.x, y: desPos2.y }) 
+      .to(0.35, { x: desPos3.x, y: desPos3.y }) 
+      .call(() => {
+        this.tween = null; 
+        dst.addTop(color, moveCount);
+        if (Global.action_list.length == Global.action_step) {
+          Global.action_list.shift();
+        }
+        Global.action_list.push({
+          from: src.getIndex(),
+          to: dst.getIndex(),
+          colorId: color,
+          num: moveCount,
+        });
+
+        effectNode.destroy();
+
+        if(this.checkAllFinish() == true){
+          console.log(" AllFinish:::::::: Send.Event...........");
+          cc.director.emit(events.LevelFinish);
+        }
+      })
+      .start();
 
     console.log(" StartMove.SrcInfo::: ",srcTopinfo," DestInfo: ",destTopInfo);
   }

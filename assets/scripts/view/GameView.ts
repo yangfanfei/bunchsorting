@@ -54,14 +54,16 @@ export default class GameView extends BaseView {
   onEnable() {
     cc.director.on(events.LevelFinish, this.GameResult, this);
     cc.director.on(events.LevelSelectChange, this.eventLevelChange, this);
-    cc.director.on(events.AddTube, this.toolCountChange, this);
+    cc.director.on(events.AddBunch, this.toolCountChange, this);
     cc.director.on(events.Back, this.toolCountChange, this);
+    cc.director.on(events.Reset, this.toolCountChange, this);
   }
   onDisable() {
     cc.director.off(events.LevelFinish, this.GameResult, this);
     cc.director.off(events.LevelSelectChange, this.eventLevelChange, this);
-    cc.director.off(events.AddTube, this.toolCountChange, this);
+    cc.director.off(events.AddBunch, this.toolCountChange, this);
     cc.director.off(events.Back, this.toolCountChange, this);
+    cc.director.off(events.Reset, this.toolCountChange, this);
   }
 
   start() {
@@ -88,13 +90,13 @@ export default class GameView extends BaseView {
   //#region 
   public onResetClick(e) {
     console.log(Global.getToolSetting("reset"));
-    //this.onceAdd = false
+    this.onceAdd = false
     if (Global.getToolSetting("reset") > 0) {
       Global.addToolSetting("reset", -1);
       cc.director.emit(events.Reset);
     } else {
-      //console.log(e.target);
-      SdkMgr.showRewardAD(() => {
+        console.log(e.target);
+        SdkMgr.showRewardAD(() => {
         cc.director.emit(events.Reset);
       });
     }
@@ -105,6 +107,7 @@ export default class GameView extends BaseView {
   public onBackClick(e) {
     if (!CupMgr.ins.checkCanUndo()) return;
     
+    cc.director.emit(events.Back);
     if (Global.getToolSetting("back") > 0) {
       Global.addToolSetting("back", -1);
       cc.director.emit(events.Back);
@@ -124,17 +127,16 @@ export default class GameView extends BaseView {
       cc.director.emit(events.Toast, `Only add one tuber per level`)
       return
     }
-    if (!CupMgr.ins.checkCanAddTube()) return;
-    
-    if (Global.getToolSetting("tube") > 0) {
+
+   if (Global.getToolSetting("tube") > 0) {
       Global.addToolSetting("tube", -1);
       this.onceAdd = true
-      cc.director.emit(events.AddTube);
+      cc.director.emit(events.AddBunch);
     } else {
       console.log(e.target);
       SdkMgr.showRewardAD(() => {
         this.onceAdd = true
-        cc.director.emit(events.AddTube);
+        cc.director.emit(events.AddBunch);
       });
     }
     this.setProps(Global._toolSetting);
@@ -227,7 +229,7 @@ export default class GameView extends BaseView {
   }
 
   setProps(props: Props) {
-    this.resetMgr.setNum(0);
+    this.resetMgr.setNum(props.reset);
     this.backMgr.setNum(props.back);
     this.tubeMgr.setNum(props.tube);
   }

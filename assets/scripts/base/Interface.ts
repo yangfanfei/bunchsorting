@@ -3,7 +3,6 @@
  * @Description: 一些基础接口类，以及一些辅助函数
  */
 
-import Cup from "../game/Cup";
 
 /**一杯水，分成四组四个颜色，0表示没有水 */
 export interface _CupInfo {
@@ -32,35 +31,46 @@ export interface SpacesArr {
   [index: number]: Array<number>;
 }
 
-// 记录选中的杯子
-export interface _SelectCupInfo {
-  oneSecectCup: Cup;
-  twoSecectCup: Cup;
-}
-//
-export interface _CupTopInfo {
-  /** 返回空位数量 */
-  emptyNum: number; //
-  /** 返回杯顶颜色ID */
-  topColorId: number; //
-  /** 返回杯顶颜色数量 */
-  topColorNum: number; //
-  /** 返回杯顶颜色的十六进制表示，如果颜色ID无效，则返回默认颜色 */
-  colorHex: string; //
+/** 抽奖 */
+export interface oneRewardInfo {
+  /** id */
+  id: number;
+  /** 标签 */
+  label: "重置" | "后退" | "试管" | "金币" | "体力" |"下一关";
+  /** key */
+  key: "reset" | "back" | "bunch" | "coin" | "power" | "next";
+  /** 数量 */
+  num: number;
 }
 
-/**
- * 杯子管理器接口
- */
-export interface CupManager {
-  /** 目标点 */
-  dstPt: cc.Vec2;
-  /** 目标全局位置 */
-  dstGlobal: cc.Vec2;
-  /** 视图大小 */
-  viewSize: cc.Size;
-  /** 是否在右侧 */
-  isRight: boolean;
+export enum SignInType {
+  // NOT_IN_LIST = '0',
+  DAY1 = "1",
+  DAY2 = "2",
+  DAY3 = "3",
+  DAY4 = "4",
+  DAY5 = "5",
+  DAY6 = "6",
+  DAY7 = "7",
+  FULL_WEEK = "8",
+}
+
+export interface signInInfo extends oneRewardInfo {
+  access: AccessType;
+  type: SignInType;
+  /** 是否已签到 */
+  isSign?: boolean;
+}
+
+/** 获取方式 */
+export enum AccessType {
+  /** 分享 */
+  Share = "0",
+  /** 视频 */
+  Video = "1",
+  /** 碎片 */
+  Fragment = "2",
+  None = "3",
 }
 
 /**

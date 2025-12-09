@@ -192,6 +192,31 @@ export class Global {
     return this.currentCoin;
   }
 
+    /** 已签到的数组 */
+  static _signArr: string[] = [];
+  static get signArr() {
+    if (Global._signArr.length === 0) {
+      Global._signArr = load(Key.SignArr, 2) || [];
+    }
+    return Global._signArr;
+  }
+  static set signArr(arr: string[]) {
+    Global._signArr = arr;
+    save(Key.SignArr, JSON.stringify(arr));
+  }
+
+  /** 添加到已签到的数组 */
+  static addSignArr(id: string) {
+    save(Key.Today, getDate());
+    let arr = this._signArr;
+    arr.push(id);
+    this.signArr = arr.slice()
+  }
+  /** 清空已签到的数组 */
+  static clearSignArr() {
+    this.signArr = [];
+  }
+
   /* used for game pause */
   static Pause(isPause = true) {
     cc.director.emit(events.Pause, isPause);

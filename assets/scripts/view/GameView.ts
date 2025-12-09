@@ -8,12 +8,12 @@ import { Clips, Key, events, ui } from "../enum/Enums";
 import PropMgr from "../manager/PropMgr";
 import { SoundMgr } from "../manager/SoundMgr";
 import CoinMgr from "../manager/CoinMgr";
-import CupMgr from "../manager/CupMgr";
 import ResMgr from "../manager/ResMgr";
 import { load, save } from "../utils/Tools";
 import BaseView from "./BaseView";
 import VictoryView from "./VictoryView";
 import { SdkMgr } from "../sdk/SdkMgr";
+import GameMgr from "../manager/GameMgr";
 
 interface Props {
   reset: number;
@@ -105,7 +105,7 @@ export default class GameView extends BaseView {
 
   /** fall back */
   public onBackClick(e) {
-    if (!CupMgr.ins.checkCanUndo()) return;
+    if (!GameMgr.ins.checkCanUndo()) return;
     
     cc.director.emit(events.Back);
     if (Global.getToolSetting("back") > 0) {
@@ -217,11 +217,6 @@ export default class GameView extends BaseView {
     Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
     // TODO:
     this.setProps(Global._toolSetting);
-  }
-
-  async onLevelClick(){
-    const view = await ResMgr.ins.getUI(ui.LevelView);
-    view.parent = this.node.parent;
   }
 
   toolCountChange(){

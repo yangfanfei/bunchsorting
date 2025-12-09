@@ -8,6 +8,7 @@ import ResMgr from "../manager/ResMgr";
 import { Global } from "../Global";
 import { events, ui } from "../enum/Enums";
 import { SdkMgr } from "../sdk/SdkMgr";
+import SignView from "./SignView";
 
 const {ccclass, property} = cc._decorator;
 
@@ -63,7 +64,9 @@ export default class MainView extends BaseView {
     }
 
     async onSignClick(){
-
+        const view = await ResMgr.ins.getUI(ui.SignView);
+        let signView = view.getComponent(SignView);
+        view.parent = this.node.parent;
     }
 
     async onRankClick(){

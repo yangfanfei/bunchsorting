@@ -183,7 +183,7 @@ export default class GameMgr extends cc.Component {
       acc += 4;
     }
 
-    //console.log(" CupMgr.initCfg::::::: curLV:",lv," curCFG: ",this.curCfg);
+
   }
 
   public checkCanAddBunch() {
@@ -228,7 +228,6 @@ export default class GameMgr extends cc.Component {
     let layoutArr: Array<cc.Layout> = [];
 
     let cupIdxGroups = this.createBunchIndexGroups(len);
-    console.log(" CupMgr.CreateBunchGroup::::::::::::: ",cupIdxGroups);
 
     let maxNum = 1;
     for (let i = 0; i < cupIdxGroups.length; i++) {
@@ -416,34 +415,11 @@ export default class GameMgr extends cc.Component {
   }
 
   private onClickCup(bunch: Bunch) {
-       //console.log(" GameMgr. Bunch SetOnClick.... bunch: ",bunch.getIndex());
-      /*if(this.selectedCup)
-      {
-        console.log(" CupMgr.OnClickCup............ SelectedCup： ",this.selectedCup.getCupIndex());
-      }
-      if(cup.getFinishState() == true)
-      {
-        cc.director.emit(events.Toast, `Cup is Full`)
-        return;
-      }
-  
-      if(cup.getPlayAnimation() == true){
-        if(this.selectedCup && this.selectedCup != cup)
-        {
-          
-        }
-        else
-        {
-          return;
-        }
-      }*/
-  
     if (this.lastSelectBunch) {
       if (this.lastSelectBunch == bunch) {
         this.doSelect(bunch, false); 
         this.lastSelectBunch = null; 
       } else if (this.checkMove(this.lastSelectBunch, bunch)) {
-        //this.startPour(this.selectedCup, cup);
         this.startMove(this.lastSelectBunch, bunch);
       } else {
         this.doSelect(this.lastSelectBunch, false); 

@@ -3,7 +3,6 @@
  * @Description: base view  Class 
  */
 import { Global } from "../Global";
-import { AdMgr } from "../ad/AdMgr";
 import { Clips } from "../enum/Enums";
 import { SoundMgr } from "../manager/SoundMgr";
 import { PoolMgr } from "../manager/PoolMgr";

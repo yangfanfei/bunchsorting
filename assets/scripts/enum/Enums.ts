@@ -4,6 +4,7 @@
  */
 
 import MainView from "../view/MainView";
+import SignView from "../view/SignView";
 
 const { ccclass, property } = cc._decorator;
 @ccclass("adConfig")
@@ -84,46 +85,7 @@ export enum BASIC_DATA {
   color_alpha4 = 3,
 }
 
-export enum PourAction {
-  none,
-
-  in,
-
-  out,
-}
-
-export const HEIGHT_FACTOR = 0.8;
-
-export const ANGLE_FACTOR = 0.01;
-
 export const SPLIT_COUNT = 4;
-
-export const WaterColors = [
-  "#7595d4",
-  "#F2C90F",
-  "#BD2656",
-  "#F0791F",
-  "#ec35e9",
-  "#0ce0f4",
-  "#9adb8e",
-  "#ef149b",
-  "#16cd09",
-  "#DD2E44",
-  "#E5C69A",
-  "#65DC8E",
-  "#B068F0",
-  "#6e7a79",
-  "#538849",
-];
-
-export const defaultColor = "#538849";
-
-export enum AnimationTime {
-
-  pourTime = 0.2,
-
-  moveTime = 0.1,
-}
 
 export const CUP_SELECTED_MOVE_HEIGHT = 100;
 
@@ -184,6 +146,7 @@ export const Key = {
   CodeList:'CodeList',
   CoinCount: 'CoinCount',
   CurMaxLevel: 'CurMaxLevel',
+  SignArr: 'SignArr',
 };
 
 /** Event List */
@@ -197,7 +160,6 @@ export const events = {
   Start: "Start",
   TimeStop: "TimeStop",
   LevelFinish: "LevelFinish",
-  Pour: "Pour",
   ExcuteGuideTask: 'ExcuteGuideTask',
   Pause: "Pause",
   LevelSelectChange: "LevelSelectChange",
@@ -209,9 +171,10 @@ export const ui = {
   GameView: { name: "GameView", layer: 3, clear: false },
   MainView: { name: "MainView", layer: 3, clear: false },
   VictoryView: { name: "VictoryView", layer: 3, clear: false },
-  GetCupView: { name: "GetCupView", layer: 3,clear: false },
+  GetItemView: { name: "GetItemView", layer: 3,clear: false },
   ToastView: { name: 'ToastView', layer: 6, clear: false },
   SettingView: { name: 'SettingView', layer: 6, clear: false },
+  SignView: { name: "SignView", layer: 6, clear: false },
 };
 
 export const prop = {

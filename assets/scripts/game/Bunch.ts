@@ -28,7 +28,7 @@ export default class Bunch extends cc.Component{
     }
 
     private initBunchData(){
-        console.log("Init CurBunchInfo::::: ",this.info.colorIds);
+        //console.log("Init CurBunchInfo::::: ",this.info.colorIds);
         for(var i = 0; i < this.info.colorIds.length; ++i){
             var color = this.info.colorIds[i];
             if(color == 0)
@@ -87,7 +87,7 @@ export default class Bunch extends cc.Component{
     }
 
     public addTop(colorId, num){
-        console.log(" addTop.Before::  curIndex: ",this.index," Add.ColorID: ",colorId," Num: ",num," Original.Color: ",this.info.colorIds);
+        //console.log(" addTop.Before::  curIndex: ",this.index," Add.ColorID: ",colorId," Num: ",num," Original.Color: ",this.info.colorIds);
         let emptyNum = this.getTopEmptyCount();
         let startIndex  = emptyNum-num
         let endIndex = startIndex + num;
@@ -100,7 +100,7 @@ export default class Bunch extends cc.Component{
     }
 
     public removeTop(num){
-        console.log(" removeTopBefore:: curIndex: ",this.index," Num: ",num," Orininal.Color: ",this.info.colorIds);
+        //console.log(" removeTopBefore:: curIndex: ",this.index," Num: ",num," Orininal.Color: ",this.info.colorIds);
         let emptyNum = this.getTopEmptyCount();
         let startIndex  = emptyNum
         let endIndex = startIndex + num;
@@ -117,12 +117,12 @@ export default class Bunch extends cc.Component{
         let tmpId = colorIds[0]; // tmp ColorId
         let sameColrCount = 0;
         for (let i = 0; i < SPLIT_COUNT; i++) {
-        if (tmpId != colorIds[i]) {
-            break;
-        } else {
-            // Same Color SplitCount + 1
-            sameColrCount++;
-        }
+            if (tmpId != colorIds[i]) {
+                break;
+            } else {
+                // Same Color SplitCount + 1
+                sameColrCount++;
+            }
         }
 
         ///  Same color and game is Passed
@@ -134,7 +134,7 @@ export default class Bunch extends cc.Component{
         return finishedState; 
     }
 
-    private getTopEmptyCount(){
+    public getTopEmptyCount(){
         let emptyNum = 0;
         for (let i = 0; i < SPLIT_COUNT; i++) {
             if (this.info.colorIds[i] == 0) {
@@ -149,7 +149,7 @@ export default class Bunch extends cc.Component{
     private onClick: (c: Bunch) => void = null;
 
     setOnClick(onClick: (c: Bunch) => void) {
-        console.log(" Bunch SetOnClick.... ");
+        //console.log(" Bunch SetOnClick.... ");
         this.onClick = onClick;
     }
 

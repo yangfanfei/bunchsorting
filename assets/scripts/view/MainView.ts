@@ -18,8 +18,8 @@ export default class MainView extends BaseView {
     label: cc.Label = null;
     @property(cc.Node)
     content: cc.Node = null;
-    @property(cc.RichText)
-    lvLabel: cc.RichText = null;
+    @property(cc.Label)
+    lvLabel: cc.Label = null;
 
     public static ins: MainView = null;
 
@@ -44,7 +44,7 @@ export default class MainView extends BaseView {
       {
         lv = Global.lv;
       }
-      this.lvLabel.string = `<b><color=#FAFAFA><outline color=#000000 width=4>Level </outline></c><color=#FAFAFA><outline color=#000000 width=4>${lv}</outline></c></b>`; 
+      this.lvLabel.string = "第" + lv + "关"; 
     }
 
     async onStartGameClick() {
@@ -54,19 +54,20 @@ export default class MainView extends BaseView {
         view.parent = this.node.parent;
     }
 
-    async onSettingClick() {
-        const view = await ResMgr.ins.getUI(ui.SettingView);
-        view.parent = this.node.parent;
+    async onDressupClick() {
+
     }
   
-    async onShopClick(){
-      const view = await ResMgr.ins.getUI(ui.ShopView);
-      view.parent = this.node.parent;
+    async onTurnTableClick(){
+
     }
 
-    async onLvClick(){
-      const view = await ResMgr.ins.getUI(ui.LevelView);
-      view.parent = this.node.parent;
+    async onSignClick(){
+
+    }
+
+    async onRankClick(){
+
     }
 
     eventLevelChange(){

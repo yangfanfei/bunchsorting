@@ -1192,16 +1192,6 @@
       "__id__": 1
     },
     "_enabled": true,
-    "showBannerAd": false,
-    "bannerDelay": 1,
-    "hideBannerOnClose": false,
-    "displayinSmallscreen": true,
-    "showIntersitialAd": true,
-    "intersitialDelay": 0.1,
-    "showVideoAd": false,
-    "showGridAd": false,
-    "showMatrixAd": false,
-    "videoDelay": 0,
     "tweenView": true,
     "root": {
       "__id__": 6

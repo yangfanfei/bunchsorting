@@ -130,14 +130,11 @@ export const CUP_SELECTED_MOVE_HEIGHT = 100;
 export const dft_lingWidth = 6; // default water flow width
 
 export const spacesArr = {
-  [1]: [40, 1], // tubecount 1，interval  40，scale 1
-  [2]: [100, 1], // tubecount 2，interval  80，scale 1
-  [3]: [100, 1], // tubecount 3，interval 60，scale 1
-  [4]: [100, 1], // tubecount 4，interval 45，scale 0.9
-  [5]: [100, 1], // tubecount 5，interval 35，scale 0.85
-  [6]: [80, 1], // tubecount 6，interval 35，scale 0.85
-  [7]: [80, 1], // tubecount 7，interval 25，scale 0.7
-  [8]: [80, 1], // tubecount 8，interval 15，scale 0.7
+  [1]: [40, 1], // tubecount 1，
+  [2]: [120, 1], // tubecount 2，
+  [3]: [120, 1], // tubecount 3，
+  [4]: [100, 1], // tubecount 4，
+  [5]: [90, 1], // tubecount 5，
 };
 
 
@@ -212,8 +209,6 @@ export const ui = {
   GameView: { name: "GameView", layer: 3, clear: false },
   MainView: { name: "MainView", layer: 3, clear: false },
   VictoryView: { name: "VictoryView", layer: 3, clear: false },
-  ShopView: { name: "ShopView", layer: 3, clear: false },
-  LevelView: { name: "LevelView", layer: 3, clear: false },
   GetCupView: { name: "GetCupView", layer: 3,clear: false },
   ToastView: { name: 'ToastView', layer: 6, clear: false },
   SettingView: { name: 'SettingView', layer: 6, clear: false },

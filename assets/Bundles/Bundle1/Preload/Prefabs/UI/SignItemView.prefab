@@ -701,6 +701,21 @@
     "dayLabel": {
       "__id__": 6
     },
+    "getLabel": {
+      "__id__": 13
+    },
+    "rewardLabel": {
+      "__id__": 17
+    },
+    "bgSpr": {
+      "__id__": 2
+    },
+    "todaySpr": {
+      "__uuid__": "7f151450-ec16-4956-b5b5-f9108b329492"
+    },
+    "nonTodaySpr": {
+      "__uuid__": "580ad658-16c5-4fce-ae16-4b907a840b93"
+    },
     "_id": ""
   },
   {

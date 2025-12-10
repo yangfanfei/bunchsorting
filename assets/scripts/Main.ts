@@ -33,7 +33,6 @@ export default class Main extends cc.Component {
 
   onLoad() {
     cc.debug.setDisplayStats(false)
-    //SdkMgr.initSdk();
     this.loadData();
     this.initMgr();
     Main.ins = this;

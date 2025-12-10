@@ -69,7 +69,6 @@ export default class SignView extends BaseView {
    * @param arr
    */
   init(arr: signInInfo[]) {
-
     console.log("SignView. Init Info:::::  ",arr);
     let week = getWeek();
     let today = load(Key.Today, 0);
@@ -94,7 +93,7 @@ export default class SignView extends BaseView {
     for (const item of arr) {
       this.addSignItem(item, week);
     }
-    //this.addFullWeek(fillList);
+    this.addFullWeek(fillList);
     //if (!this.todayItem) {
    //   this.hideBtn();
     //}
@@ -110,7 +109,7 @@ export default class SignView extends BaseView {
     });
     signItem.updateSignState(this.signTypes.length >= 7);
     signItem.updateTodayState(this.signTypes.length == 6);
-    signItem.setMaskState(this.signTypes.length >= 7);
+    //signItem.setMaskState(this.signTypes.length >= 7);
     for (let i = 0; i < fillList.length; i++) {
       let item = fillList[i];
       signItem.addContentNode(item);
@@ -131,9 +130,9 @@ export default class SignView extends BaseView {
     });
     let todaySignState = +item.type === week && !item.isSign;
     signItem.setDayLabel(+item.type);
-    signItem.addContentNode(item);
-    signItem.updateMendSignState(item.access, +item.type < week);
-    signItem.setMaskState(+item.type < week || item.isSign);
+    //signItem.addContentNode(item);
+    //signItem.updateMendSignState(item.access, +item.type < week);
+    //signItem.setMaskState(+item.type < week || item.isSign);
     signItem.updateSignState(item.isSign);
     signItem.updateTodayState(todaySignState);
     if (todaySignState) {
@@ -142,7 +141,7 @@ export default class SignView extends BaseView {
         signScript: signItem,
       };
     }
-    signItem.mendSignFn = () => {
+    /*signItem.mendSignFn = () => {
       if (item.isSign) return;
 
       if (item.access === AccessType.Share) {
@@ -152,7 +151,7 @@ export default class SignView extends BaseView {
           // TODO:分享
           this.getReward([item], signItem, false);
           this.checkIsFullWeek();
-        });*/
+        });
       } else {
         console.log("视频");
         // TODO:视频
@@ -160,9 +159,9 @@ export default class SignView extends BaseView {
           signItem.updateSignState(true);
           this.getReward([item], signItem, false);
           this.checkIsFullWeek();
-        });*/
+        });
       }
-    };
+    };*/
   }
 
   // 直接领取 按钮事件

@@ -43,7 +43,7 @@
         {
             "id":"6",
             "access":"0",
-            "num":"1",
+            "num":"100",
             "key":"coin",
             "label":"金币",
             "type":"6"
@@ -51,7 +51,7 @@
         {
             "id":"7",
             "access":"0",
-            "num":"10",
+            "num":"100",
             "key":"coin",
             "label":"金币",
             "type":"7"

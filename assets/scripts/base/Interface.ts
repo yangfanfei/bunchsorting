@@ -16,11 +16,11 @@ export interface BunchInfo {
 }
 
 export interface BunchTopInfo {
-  /** 返回空位数量 */
+  /** 空位数量 */
   emptyNum: number; //
-  /** 返回杯顶颜色ID */
+  /** 返回Top颜色ID */
   topColorId: number; //
-  /** 返回杯顶颜色数量 */
+  /** 返回Top颜色数量 */
   topColorNum: number; //
 }
 
@@ -51,8 +51,7 @@ export enum SignInType {
   DAY4 = "4",
   DAY5 = "5",
   DAY6 = "6",
-  DAY7 = "7",
-  FULL_WEEK = "8",
+  FULL_WEEK = "7",
 }
 
 export interface signInInfo extends oneRewardInfo {

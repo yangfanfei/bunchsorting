@@ -60,7 +60,7 @@ export default class SignView extends BaseView {
   async start() {
     // setTimeout(async () => {
     let json = ResMgr.ins.getJson("sign");
-    await this.init(json.json.loop);
+    await this.init(json.json.first);
     // }, 3000);
   }
   private todayItem: ISignItem = null;
@@ -82,9 +82,12 @@ export default class SignView extends BaseView {
    * @param arr
    */
   init(arr: signInInfo[]) {
-    console.log("SignView. Init Info:::::  ",arr," SignDta: ",getDate());
+    let  SignFirst = Global.loadSignFirst()
+    let  SignData = Global.loadSignData()
+    console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData," SignFirst: ",SignFirst);
     let signArr = Global.signArr;
     if(signArr.length > 7){
+      Global.saveSignFirst(true);
       Global.clearSignArr()
       console.log(" Clear.Data.......... ");
     }

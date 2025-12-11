@@ -147,6 +147,8 @@ export const Key = {
   CoinCount: 'CoinCount',
   CurMaxLevel: 'CurMaxLevel',
   SignArr: 'SignArr',
+  SignFirst: 'SignFirst',
+  SignDate: 'SignDate',
 };
 
 /** Event List */

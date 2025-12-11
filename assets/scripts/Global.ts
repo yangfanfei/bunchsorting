@@ -198,7 +198,6 @@ export class Global {
     if (Global._signArr.length === 0) {
       Global._signArr = load(Key.SignArr, 2) || [];
     }
-
     console.log(" Load.SignArr:::::  ",Global._signArr);
     return Global._signArr;
   }
@@ -227,5 +226,23 @@ export class Global {
   static Pause(isPause = true) {
     cc.director.emit(events.Pause, isPause);
     Global.start = !isPause;
+  }
+
+  static loadSignFirst(){
+    let data = load(Key.SignFirst)
+    return data != null
+  }
+
+  static saveSignFirst(val:boolean){
+    save(Key.SignFirst, val);
+  }
+
+  static loadSignData(){
+    let signData = load(Key.SignDate)
+    return signData
+  }
+
+  static saveSignData(saveStr:String){
+    save(Key.SignDate, saveStr);
   }
 }

@@ -3,6 +3,7 @@
  * @Description: Get Cup View
  */
 
+import GameMgr from "../manager/GameMgr";
 import BaseView from "./BaseView";
 
 const { ccclass, property } = cc._decorator;
@@ -19,19 +20,21 @@ export default class GetItemView extends BaseView {
   // onLoad () {}
 
   start() { 
-    console.log(" GetItemView. Starttttt.... ");
+
   }
 
   setTitleImg() {
 
   }
 
-  setPropImg(img: cc.SpriteFrame) {
-    this.propSprite.spriteFrame = img;
+  setPropImg(spr:cc.SpriteFrame) {
+    this.propSprite.spriteFrame = spr;
   }
+
   setScale(scale: number) {
     this.rootNode.scale = scale;
   }
+  
   cancelFn: Function;
   close(): void {
     this.node.destroy();

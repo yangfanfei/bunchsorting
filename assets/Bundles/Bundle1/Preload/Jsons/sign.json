@@ -1,8 +1,66 @@
 {
-    "data":[
+    "first":[
         {
             "id":"1",
-            "access":"1",
+            "access":"0",
+            "num":"100",
+            "key":"coin",
+            "label":"金币",
+            "type":"1"
+        },
+        {
+            "id":"2",
+            "access":"0",
+            "num":"1",
+            "key":"back",
+            "label":"回退",
+            "type":"2"
+        },
+        {
+            "id":"3",
+            "access":"0",
+            "num":"100",
+            "key":"coin",
+            "label":"金币",
+            "type":"3"
+        },
+        {
+            "id":"4",
+            "access":"0",
+            "num":"100",
+            "key":"coin",
+            "label":"金币",
+            "type":"4"
+        },
+        {
+            "id":"5",
+            "access":"0",
+            "num":"1",
+            "key":"reset",
+            "label":"重置",
+            "type":"5"
+        },
+        {
+            "id":"6",
+            "access":"0",
+            "num":"100",
+            "key":"coin",
+            "label":"金币",
+            "type":"6"
+        },
+        {
+            "id":"7",
+            "access":"0",
+            "num":"100",
+            "key":"coin",
+            "label":"金币",
+            "type":"7"
+        }
+    ],
+    "loop":[
+        {
+            "id":"1",
+            "access":"0",
             "num":"100",
             "key":"coin",
             "label":"金币",
@@ -18,7 +76,7 @@
         },
         {
             "id":"3",
-            "access":"1",
+            "access":"0",
             "num":"100",
             "key":"coin",
             "label":"金币",

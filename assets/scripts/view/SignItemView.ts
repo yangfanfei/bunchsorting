@@ -22,13 +22,22 @@ export default class SignItemView extends cc.Component {
   rewardLabel: cc.Label = null;
 
   @property(cc.Node)
-  bgSpr:cc.Node = null;
+  bgNode:cc.Node = null;
+
+  @property(cc.Node)
+  coinNode:cc.Node = null;
 
   @property(cc.SpriteFrame)
   todaySpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
   nonTodaySpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  coinNormal:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  coinRecv:cc.SpriteFrame = null;
 
   //@property(cc.Node)
   //content: cc.Node = null;
@@ -62,77 +71,46 @@ export default class SignItemView extends cc.Component {
   setDayLabel(day: number) {
     if (this.dayLabel) this.dayLabel.string = `第${day}天`;
   }
-  // 遮罩是否展示
-  setMaskState(state: boolean) {
-    //this.maskNode.active = state;
+
+  setItemSpr(sprFr:cc.SpriteFrame){
+    let spr = this.coinNode.getComponent(cc.Sprite);
+    spr.spriteFrame = sprFr;
   }
 
   //   更新签到状态
   updateSignState(state: boolean) {
     this._signState = state;
+    var  coinSpr  = this.coinNode.getComponent(cc.Sprite);
     if(this._signState == true)
     {
       this.getLabel.node.active = true;
       this.rewardLabel.node.active = false;
+      coinSpr.spriteFrame = this.coinRecv;
     }
     else
     {
       this.getLabel.node.active = false;
       this.rewardLabel.node.active = true;
+      coinSpr.spriteFrame = this.coinNormal;
     }
   }
   // 更新今天状态
   updateTodayState(state: boolean) {
     this._isToday = state;
+    var bgSpr = this.bgNode.getComponent(cc.Sprite);
     if(this._isToday == true)
     {
-
+      bgSpr.spriteFrame = this.todaySpr;
     }
     else
     {
-      
+      bgSpr.spriteFrame = this.nonTodaySpr;
     }
   }
 
-  //   在content添加元素
-  async addContentNode(oneInfo: signInInfo) {
-    //let onePre = await ResMgr.ins.getUI(prop[oneInfo.key]);
-    //let propBlockMgr = onePre.getComponent(PropBlockMgr);
-
-    //propBlockMgr.setLabel(`${oneInfo.label}x${oneInfo.num}`);
-    // propBlockMgr.label.node.color = cc.Color.WHITE;
-    //onePre.parent = this.content;
-    //propBlockMgr.setLabelColor(new cc.Color(0, 0, 0));
-  } 
- 
-  /**
-   * 补签状态及是否显示
-   * @param state  补签类型
-   * @param isShow  是否显示
-   * @returns
-   */
-  updateMendSignState(state: AccessType, isShow: boolean) {
-    /*this.signLayoutNode.active = !isShow;
-    if (!this.mendSignNode) return;
-    this.mendSignNode.active = isShow;
-
-    switch (state) {
-      case AccessType.Share:
-        this.mendSignNode.getComponent(cc.Sprite).spriteFrame =
-          this.mendSignSpriteFrames[0];
-        break;
-      case AccessType.Video:
-        this.mendSignNode.getComponent(cc.Sprite).spriteFrame =
-          this.mendSignSpriteFrames[1];
-        break;
-      default:
-        break;
-    }*/
+  setItemCount(count:number){
+    this.rewardLabel.string = count+"";
   }
-  // 补签点击事件
-  mendSignClick() {
-    console.log("补签");
-    if (this.mendSignFn) this.mendSignFn();
-  }
+
   // LIFE-CYCLE CALLBACKS:
 }

@@ -34,6 +34,18 @@ export default class GameMgr extends cc.Component {
   @property(cc.Node)
   dishBg3: cc.Node = null;
 
+  @property(cc.SpriteFrame)
+  coinSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  resetSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  backSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  bunchSpr:cc.SpriteFrame = null;
+
   @property([cc.SpriteFrame])
   public bunchImgs: cc.SpriteFrame[] = [];
 
@@ -409,12 +421,12 @@ export default class GameMgr extends cc.Component {
     bunchComp.setBunchInfo(info);
 
     //console.log(" CreateCupNode:::: SetOnClick........ ");
-    bunchComp.setOnClick(this.onClickCup.bind(this, bunchComp));
+    bunchComp.setOnClick(this.onClickBunch.bind(this, bunchComp));
 
     return bunchComp;
   }
 
-  private onClickCup(bunch: Bunch) {
+  private onClickBunch(bunch: Bunch) {
     if (this.lastSelectBunch) {
       if (this.lastSelectBunch == bunch) {
         this.doSelect(bunch, false); 

@@ -1205,6 +1205,18 @@
     "dishBg3": {
       "__id__": 13
     },
+    "coinSpr": {
+      "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
+    },
+    "resetSpr": {
+      "__uuid__": "0cc04202-b110-49c4-a056-5f5b3b1b2046"
+    },
+    "backSpr": {
+      "__uuid__": "6b03c5aa-b6ed-43c8-93dc-05f8e0e8cc66"
+    },
+    "bunchSpr": {
+      "__uuid__": "77002cb3-1577-4439-849c-e2ad010f6f07"
+    },
     "bunchImgs": [
       {
         "__uuid__": "c11aaa00-91c5-41c9-ba79-be0379f69b4a"

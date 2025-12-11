@@ -36,9 +36,9 @@ export interface oneRewardInfo {
   /** id */
   id: number;
   /** 标签 */
-  label: "重置" | "后退" | "试管" | "金币" | "体力" |"下一关";
+  label: "重置" | "后退" | "串" | "金币";
   /** key */
-  key: "reset" | "back" | "bunch" | "coin" | "power" | "next";
+  key: "reset" | "back" | "bunch" | "coin";
   /** 数量 */
   num: number;
 }

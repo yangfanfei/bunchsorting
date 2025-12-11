@@ -198,10 +198,14 @@ export class Global {
     if (Global._signArr.length === 0) {
       Global._signArr = load(Key.SignArr, 2) || [];
     }
+
+    console.log(" Load.SignArr:::::  ",Global._signArr);
     return Global._signArr;
   }
+
   static set signArr(arr: string[]) {
     Global._signArr = arr;
+    console.log(" Set.SignArr:::::  ",Global._signArr);
     save(Key.SignArr, JSON.stringify(arr));
   }
 
@@ -211,9 +215,11 @@ export class Global {
     let arr = this._signArr;
     arr.push(id);
     this.signArr = arr.slice()
+    console.log(" Add.SignArr:::::: ",this.signArr);
   }
   /** 清空已签到的数组 */
   static clearSignArr() {
+    console.log(" Clear.SignArr::::::::: ");
     this.signArr = [];
   }
 

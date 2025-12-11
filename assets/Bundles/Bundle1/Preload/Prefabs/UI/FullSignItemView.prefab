@@ -669,7 +669,7 @@
       "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
     },
     "_type": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -690,7 +690,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "02xqeLIhdP5qGdJz9x0uAb",
+    "fileId": "d6+rTZQmRJzLgmp7iZapGe",
     "sync": false
   },
   {
@@ -731,9 +731,33 @@
       "__id__": 1
     },
     "_enabled": true,
-    "dayLabel": null,
-    "getLabel": null,
-    "rewardLabel": null,
+    "dayLabel": {
+      "__id__": 6
+    },
+    "getLabel": {
+      "__id__": 10
+    },
+    "rewardLabel": {
+      "__id__": 14
+    },
+    "bgNode": {
+      "__id__": 2
+    },
+    "coinNode": {
+      "__id__": 17
+    },
+    "todaySpr": {
+      "__uuid__": "7f151450-ec16-4956-b5b5-f9108b329492"
+    },
+    "nonTodaySpr": {
+      "__uuid__": "580ad658-16c5-4fce-ae16-4b907a840b93"
+    },
+    "coinNormal": {
+      "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
+    },
+    "coinRecv": {
+      "__uuid__": "28c6c743-a35b-4be5-ae05-4ee3cf763b71"
+    },
     "_id": ""
   },
   {

@@ -7,7 +7,7 @@ import { Global } from "../Global";
 import { Clips, Key, ui } from "../enum/Enums";
 import { AccessType, SignInType, signInInfo } from "../base/Interface";
 import ResMgr from "../manager/ResMgr";
-import { getDate, load } from "../utils/Tools";
+import { getDate, load, Tools } from "../utils/Tools";
 import BaseView from "./BaseView";
 import GetItemView from "./GetItemView";
 import SignItemView from "./SignItemView";
@@ -40,15 +40,27 @@ export default class SignView extends BaseView {
 
   @property(cc.Node)
   content: cc.Node = null;
-  // onLoad () {}
 
   @property(cc.Node)
   btnGrousp: cc.Node = null;
 
+  @property(cc.SpriteFrame)
+  coinSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  resetSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  backSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  bunchSpr:cc.SpriteFrame = null;
+
+
   async start() {
     // setTimeout(async () => {
     let json = ResMgr.ins.getJson("sign");
-    await this.init(json.json.data);
+    await this.init(json.json.loop);
     // }, 3000);
   }
   private todayItem: ISignItem = null;
@@ -59,7 +71,8 @@ export default class SignView extends BaseView {
    * @param type 签到类型
    */
   addSignType(type: SignInType) {
-    Global.addSignArr(type);
+    console.log(" SignView.AddSignType::: ",type);
+    //Global.addSignArr(type);
     if (!this.signTypes.includes(type)) {
       this.signTypes.push(type);
     }
@@ -69,15 +82,21 @@ export default class SignView extends BaseView {
    * @param arr
    */
   init(arr: signInInfo[]) {
-    console.log("SignView. Init Info:::::  ",arr);
-    let week = getWeek();
-    let today = load(Key.Today, 0);
-    // 清空签到记录 TODO:
-    if (!today || (week < getWeek(today))) {
-      Global.clearSignArr();
+    console.log("SignView. Init Info:::::  ",arr," SignDta: ",getDate());
+    let signArr = Global.signArr;
+    if(signArr.length > 7){
+      Global.clearSignArr()
+      console.log(" Clear.Data.......... ");
     }
+    //let week = getWeek();
+    let week = signArr.length+1;
+    //let today = load(Key.Today, 0);
+    // 清空签到记录 TODO:
+    //if (!today || (week < getWeek(today))) {
+    //  Global.clearSignArr();
+    //}
     arr = arr.map((item) => {
-      let isSign = Global.signArr.includes(item.id.toString());
+      let isSign = Global.signArr.includes(item.type.toString());
       if (isSign) {
         this.addSignType(item.type);
       }
@@ -94,9 +113,17 @@ export default class SignView extends BaseView {
       this.addSignItem(item, week);
     }
     this.addFullWeek(fillList);
-    //if (!this.todayItem) {
-   //   this.hideBtn();
-    //}
+    
+    /*if (!this.todayItem) {
+      this.hideBtn();
+    }
+    else if(this.todayItem){
+      var  todayInfo = this.todayItem.info
+      if(todayInfo[0].isSign == true)
+      {
+        this.hideBtn();
+      }
+    }*/
   }
   //   添加满七天的节点
   addFullWeek(fillList: signInInfo[]) {
@@ -107,12 +134,39 @@ export default class SignView extends BaseView {
       info: fillList,
       signScript: signItem,
     });
+    
+    let globalArr = Global.signArr;
+
     signItem.updateSignState(this.signTypes.length >= 7);
     signItem.updateTodayState(this.signTypes.length == 6);
-    //signItem.setMaskState(this.signTypes.length >= 7);
     for (let i = 0; i < fillList.length; i++) {
       let item = fillList[i];
-      signItem.addContentNode(item);
+      let todaySignState = +item.type === 7;
+      if(item.key == "coin")
+      {
+        signItem.setItemSpr(this.coinSpr);
+      }
+      else if(item.key == "back")
+      {
+        signItem.setItemSpr(this.backSpr);
+      }
+      else if(item.key == "reset")
+      {
+        signItem.setItemSpr(this.resetSpr);
+      }
+      else if(item.key == "bunch")
+      {
+        signItem.setItemSpr(this.bunchSpr);
+      }
+      signItem.setItemCount(item.num);
+      signItem.setDayLabel(+item.type);
+        if (todaySignState && globalArr.length >= 6) {
+        console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
+        this.todayItem = {
+          info: [item],
+          signScript: signItem,
+        };
+      }
     }
   }
   /**
@@ -128,56 +182,53 @@ export default class SignView extends BaseView {
       info: [item],
       signScript: signItem,
     });
-    let todaySignState = +item.type === week && !item.isSign;
+    let todaySignState = +item.type === week;
     signItem.setDayLabel(+item.type);
-    //signItem.addContentNode(item);
-    //signItem.updateMendSignState(item.access, +item.type < week);
-    //signItem.setMaskState(+item.type < week || item.isSign);
     signItem.updateSignState(item.isSign);
-    signItem.updateTodayState(todaySignState);
+    signItem.updateTodayState(todaySignState && item.isSign == false);
+    if(item.key == "coin")
+    {
+      signItem.setItemSpr(this.coinSpr);
+    }
+    else if(item.key == "back")
+    {
+      signItem.setItemSpr(this.backSpr);
+    }
+    else if(item.key == "reset")
+    {
+      signItem.setItemSpr(this.resetSpr);
+    }
+    else if(item.key == "bunch")
+    {
+      signItem.setItemSpr(this.bunchSpr);
+    }
+    signItem.setItemCount(item.num);
     if (todaySignState) {
+      console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
       this.todayItem = {
         info: [item],
         signScript: signItem,
       };
     }
-    /*signItem.mendSignFn = () => {
-      if (item.isSign) return;
-
-      if (item.access === AccessType.Share) {
-        console.log("分享");
-        /*super.share(() => {
-          signItem.updateSignState(true);
-          // TODO:分享
-          this.getReward([item], signItem, false);
-          this.checkIsFullWeek();
-        });
-      } else {
-        console.log("视频");
-        // TODO:视频
-        /*super.showVideo(() => {
-          signItem.updateSignState(true);
-          this.getReward([item], signItem, false);
-          this.checkIsFullWeek();
-        });
-      }
-    };*/
   }
 
   // 直接领取 按钮事件
   onGetBtnClick() {
     if (this.todayItem)
       this.getReward(this.todayItem.info, this.todayItem.signScript, false);
-    this.checkIsFullWeek();
+    //this.checkIsFullWeek();
     this.hideBtn();
   }
   // 领双份按钮事件
   onGetDoubleBtnClick() {
     function handle() {
       this.getReward(this.todayItem.info, this.todayItem.signScript, true);
-      this.checkIsFullWeek(true);
+      //this.checkIsFullWeek(true);
       this.hideBtn();
     }
+
+    Global.clearSignArr();
+    
     //super.showVideo(handle.bind(this));
 
     // TODO:视频 item.access === AccessType.Share
@@ -208,19 +259,28 @@ export default class SignView extends BaseView {
       let id = item.id;
       item.num *= isDouble ? 2 : 1;
       // Global.signArr.push(id.toString());
-      if (item.key === 'power') {
-        //EnergyMgr.ins.changeEnergy(true, +item.num)
-      } else {
+      let spr = this.coinSpr;
+      if (item.key === 'coin') {
+        Global.addCoin(item.num);
+      }else if(item.key == "reset") {
         //Global.addPropsSetting(item.key, +item.num);
-
+        spr = this.resetSpr;
+      }else if(item.key == "back"){
+        spr = this.backSpr;
+      }else if(item.key == "bunch"){
+        spr = this.backSpr;
       }
       // Global.addPropsSetting(item.key, +item.num);
+
+      //propsView.parent = this.node;
+
+      this.showGetItemView(spr);
+
       this.addSignType(item.type);
+      Global.addSignArr(item.type);
       //#region
-      signItemScript.updateMendSignState(item.access, false);
       signItemScript.updateSignState(true);
       signItemScript.updateTodayState(false);
-      signItemScript.setMaskState(true);
       //#endregion
       return {
         id: id,
@@ -229,26 +289,6 @@ export default class SignView extends BaseView {
         num: item.num,
       };
     });
-
-    /*let propsView = await ResMgr.ins.getUI(ui.PropsModalView);
-    let propModalView = propsView.getComponent(PropModalView);
-
-    propModalView.renderProps(infos);
-    propModalView.watchVideoCallback = () => {
-      // super.showVideo(() => {
-        for (const info of infos) {
-          if (info.key === 'power') {
-            EnergyMgr.ins.changeEnergy(true, +info.num)
-          } else {
-            Global.addPropsSetting(info.key, +info.num);
-          }
-          // Global.addPropsSetting(info.key, info.num * 2);
-        }
-      // });
-      // Global.addPropsSetting(ids);
-      console.log("领取奖励X2");
-    };
-    propsView.parent = this.node;*/
   }
   /**
    *  判断有没有领取过的
@@ -274,6 +314,19 @@ export default class SignView extends BaseView {
         this.getReward(item.info, item.signScript, isDouble);
       }
     }
+  }
+
+  async showGetItemView(itemSpr:cc.SpriteFrame){
+      SoundMgr.ins.playSound(Clips.modal, 0.5);
+
+      const GetItemViewUI = await ResMgr.ins.getUI(
+        ui.GetItemView
+      );
+      const itemViewScrpit = GetItemViewUI.getComponent(GetItemView);
+
+      itemViewScrpit.setTitleImg();
+      itemViewScrpit.setPropImg(itemSpr);
+      GetItemViewUI.parent = this.node;
   }
 
   /**

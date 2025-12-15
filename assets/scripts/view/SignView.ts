@@ -48,6 +48,9 @@ export default class SignView extends BaseView {
   coinSpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
+  coinGetedSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
   resetSpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
@@ -60,7 +63,18 @@ export default class SignView extends BaseView {
   async start() {
     // setTimeout(async () => {
     let json = ResMgr.ins.getJson("sign");
-    await this.init(json.json.first);
+
+    let GetSignFirst = Global.loadSignFirst();
+    //console.log(" SignView.Start:::::::  GetSignFirst::::  ",GetSignFirst);
+    if(GetSignFirst == true)
+    {
+      await this.init(json.json.loop);
+    }
+    else
+    {
+      await this.init(json.json.first);
+    }
+    //await this.init(json.json.first);
     // }, 3000);
   }
   private todayItem: ISignItem = null;
@@ -71,7 +85,7 @@ export default class SignView extends BaseView {
    * @param type 签到类型
    */
   addSignType(type: SignInType) {
-    console.log(" SignView.AddSignType::: ",type);
+    //console.log(" SignView.AddSignType::: ",type);
     //Global.addSignArr(type);
     if (!this.signTypes.includes(type)) {
       this.signTypes.push(type);
@@ -82,17 +96,24 @@ export default class SignView extends BaseView {
    * @param arr
    */
   init(arr: signInInfo[]) {
-    let  SignFirst = Global.loadSignFirst()
     let  SignData = Global.loadSignData()
-    console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData," SignFirst: ",SignFirst);
+    console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData);
     let signArr = Global.signArr;
-    if(signArr.length > 7){
-      Global.saveSignFirst(true);
-      Global.clearSignArr()
-      console.log(" Clear.Data.......... ");
-    }
+    //if(signArr.length > 7){
+    //  Global.saveSignFirst(true);
+    //  Global.clearSignArr()
+    //  console.log(" Clear.Data.......... ");
+    //}
     //let week = getWeek();
-    let week = signArr.length+1;
+    let week = signArr.length;
+    if(getDate() != Global.loadSignData())
+    {
+      week = signArr.length+1;
+    }
+    if(week == 0)
+    {
+      week = 1
+    }
     //let today = load(Key.Today, 0);
     // 清空签到记录 TODO:
     //if (!today || (week < getWeek(today))) {
@@ -116,6 +137,11 @@ export default class SignView extends BaseView {
       this.addSignItem(item, week);
     }
     this.addFullWeek(fillList);
+
+    //if(SignData == getDate())
+    //{
+    //  this.hideBtn()
+    //}
     
     /*if (!this.todayItem) {
       this.hideBtn();
@@ -139,28 +165,50 @@ export default class SignView extends BaseView {
     });
     
     let globalArr = Global.signArr;
-
-    signItem.updateSignState(this.signTypes.length >= 7);
-    signItem.updateTodayState(this.signTypes.length == 6);
     for (let i = 0; i < fillList.length; i++) {
       let item = fillList[i];
-      let todaySignState = +item.type === 7;
+      let todaySignState = false;
+      if(+item.type == 7)
+      {
+          if(getDate() == Global.loadSignData())
+          {
+            todaySignState = true;
+          }
+          else
+          {
+            todaySignState = false;
+          }
+      }
+      else
+      {
+        todaySignState = false;
+      }
+      let spr:cc.SpriteFrame = this.coinSpr;
       if(item.key == "coin")
       {
-        signItem.setItemSpr(this.coinSpr);
+        if(item.isSign == true)
+        {
+          spr = this.coinGetedSpr
+        }
+        else
+        {
+          spr = this.coinSpr;
+        }
       }
       else if(item.key == "back")
       {
-        signItem.setItemSpr(this.backSpr);
+        spr = this.backSpr;
       }
       else if(item.key == "reset")
       {
-        signItem.setItemSpr(this.resetSpr);
+        spr = this.resetSpr;
       }
       else if(item.key == "bunch")
       {
-        signItem.setItemSpr(this.bunchSpr);
+        spr = this.bunchSpr;
       }
+      signItem.updateSignState(this.signTypes.length >= 7, spr);
+      signItem.updateTodayState(this.signTypes.length == 6);
       signItem.setItemCount(item.num);
       signItem.setDayLabel(+item.type);
         if (todaySignState && globalArr.length >= 6) {
@@ -185,29 +233,47 @@ export default class SignView extends BaseView {
       info: [item],
       signScript: signItem,
     });
-    let todaySignState = +item.type === week;
+    let todaySignState = false;
+    if(+item.type == week)
+    {
+      todaySignState = true;
+    }
+    else
+    {
+      todaySignState = false;
+    }
+    //let todaySignState = (getDate() != Global.loadSignData())
     signItem.setDayLabel(+item.type);
-    signItem.updateSignState(item.isSign);
-    signItem.updateTodayState(todaySignState && item.isSign == false);
+    let spr:cc.SpriteFrame = this.coinSpr;
     if(item.key == "coin")
     {
-      signItem.setItemSpr(this.coinSpr);
+      if(item.isSign == true)
+      {
+        spr = this.coinGetedSpr
+      }
+      else
+      {
+        spr = this.coinSpr;
+      }
     }
     else if(item.key == "back")
     {
-      signItem.setItemSpr(this.backSpr);
+      spr = this.backSpr;
     }
     else if(item.key == "reset")
     {
-      signItem.setItemSpr(this.resetSpr);
+      spr = this.resetSpr;
     }
     else if(item.key == "bunch")
     {
-      signItem.setItemSpr(this.bunchSpr);
+      spr = this.bunchSpr;
     }
+    signItem.updateSignState(item.isSign, spr);
+    //console.log(" AddSignItem:::  Item:::::::::",item," week:::: ",week);
+    signItem.updateTodayState(todaySignState && item.isSign == false);
     signItem.setItemCount(item.num);
     if (todaySignState) {
-      console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
+      //console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
       this.todayItem = {
         info: [item],
         signScript: signItem,
@@ -231,7 +297,8 @@ export default class SignView extends BaseView {
     }
 
     Global.clearSignArr();
-    
+    Global.saveSignFirst(false);
+    Global.clearSignData();
     //super.showVideo(handle.bind(this));
 
     // TODO:视频 item.access === AccessType.Share
@@ -263,15 +330,21 @@ export default class SignView extends BaseView {
       item.num *= isDouble ? 2 : 1;
       // Global.signArr.push(id.toString());
       let spr = this.coinSpr;
+      let sprGet = this.coinGetedSpr;
       if (item.key === 'coin') {
         Global.addCoin(item.num);
       }else if(item.key == "reset") {
-        //Global.addPropsSetting(item.key, +item.num);
+        Global.addToolSetting("reset", 1);
         spr = this.resetSpr;
+        sprGet = this.resetSpr;
       }else if(item.key == "back"){
         spr = this.backSpr;
+        sprGet = this.backSpr
+        Global.addToolSetting("back", 1);
       }else if(item.key == "bunch"){
-        spr = this.backSpr;
+        spr = this.bunchSpr;
+        sprGet = this.bunchSpr
+        Global.addToolSetting("bunch", 1);
       }
       // Global.addPropsSetting(item.key, +item.num);
 
@@ -281,8 +354,17 @@ export default class SignView extends BaseView {
 
       this.addSignType(item.type);
       Global.addSignArr(item.type);
+
+      Global.saveSignData(getDate());
+
+      if(item.id == 7)
+      {
+        Global.saveSignFirst(true);
+        Global.clearSignArr()
+        console.log(" Clear.Data.......... ");
+      }
       //#region
-      signItemScript.updateSignState(true);
+      signItemScript.updateSignState(true,sprGet);
       signItemScript.updateTodayState(false);
       //#endregion
       return {

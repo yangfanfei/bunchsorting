@@ -10,6 +10,7 @@ import GameView from "../view/GameView";
 import CoinMgr from "./CoinMgr";
 import { BunchInfo, SpacesArr } from "../base/Interface";
 import Bunch from "../game/Bunch";
+import { randomNum } from "../base/Math";
 
 const { ccclass, property } = cc._decorator;
 
@@ -59,6 +60,7 @@ export default class GameMgr extends cc.Component {
   private isPlaying:boolean = false;
   private lastSelectBunch: Bunch = null;
   private tween: cc.Tween = null;
+  private currentTotalColorCount = 0;
 
   onLoad() {
     if (CC_EDITOR) {
@@ -127,31 +129,12 @@ export default class GameMgr extends cc.Component {
     }
 
     //console.log(" UndoAction.Data:: ",action);
-
     let src = this.getBunchByIndex(action.from);
     let dest = this.getBunchByIndex(action.to);
 
     dest.removeTop(action.num);
     src.addTop(action.colorId, action.num);
-    //let toCup = this._cups[to];
-    //let fromCup = this._cups[from];
-    /*let toCupIsFull = toCup.checkFinishImp(false);
-    let fromCupIsFull = fromCup.checkFinishImp(false);
 
-    /////// fall back resetCoin and tube state
-    if(toCupIsFull == true){
-      toCup.resetCheckFinishedState();
-      Global.subCoin(Global.tubeRewardCoin);
-      CoinMgr.ins.setCoinLabel();
-    }
-    if(fromCupIsFull == true){
-      fromCup.resetCheckFinishedState();
-      Global.subCoin(Global.tubeRewardCoin);
-      CoinMgr.ins.setCoinLabel();
-    }*/
-
-    //toCup.removeTopWaterImmediately(num);
-    //fromCup.addWaterImmediately(colorId, num);
     return true;
   }
 
@@ -162,8 +145,26 @@ export default class GameMgr extends cc.Component {
       this.lastSelectBunch = null;
     }
 
-    this.curCfg.push({ colorIds: [0, 0, 0, 0] });
+    console.log(" this.curCfg.Before.ADD::: ",this.curCfg);
+
+    let randomColor = randomNum(1,this.currentTotalColorCount);
+
+    this.curCfg.push({ colorIds: [randomColor, randomColor, randomColor, randomColor] });
+
+    console.log(" this.curCfg.After.ADD::: ",this.curCfg,"  Random.Color: ",randomColor);
+    this.removeOneColor(randomColor);
+
     this.createBunches();
+  }
+
+
+  private removeOneColor(colorID:Number)
+  {
+    for(let i = 0; i < this.curBunchs.length; ++i)
+    {
+      let bunch = this.curBunchs[i];
+      bunch.removeOneColor(colorID);
+    }
   }
 
   private getBunchByIndex(val){
@@ -180,7 +181,8 @@ export default class GameMgr extends cc.Component {
   protected initCfg() {
     this.curCfg = [];
     let  lv = Global.lv;
-    let cfgArr: Array<number> = this.levelCfg.json[lv-1]; 
+    let cfgArr: Array<number> = this.levelCfg.json[lv-1];
+    let tmpColor: Array<number> = [];
     let acc = 0;
     while (acc < cfgArr.length) {
       let info = {
@@ -191,11 +193,22 @@ export default class GameMgr extends cc.Component {
           cfgArr[acc + 3] || 0,
         ],
       };
+
+      for(var i = 0;i < info.colorIds.length; ++i)
+      {
+        let colorID = info.colorIds[i]
+        if(tmpColor.includes(colorID) == false && colorID != 0){
+          tmpColor.push(colorID);
+          console.log(" ColorID::::  Add  To  Array",colorID);
+        }
+      }
+
       this.curCfg.push(info);
       acc += 4;
     }
 
-
+    console.log(" After Parse CFG.Color.Count::: ",tmpColor.length);
+    this.currentTotalColorCount = tmpColor.length;
   }
 
   public checkCanAddBunch() {

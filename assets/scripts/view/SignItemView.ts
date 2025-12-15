@@ -34,31 +34,7 @@ export default class SignItemView extends cc.Component {
   nonTodaySpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
-  coinNormal:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  coinRecv:cc.SpriteFrame = null;
-
-  //@property(cc.Node)
-  //content: cc.Node = null;
-
-  //@property(cc.Node)
-  //maskNode: cc.Node = null;
-
-  //@property(cc.Node)
-  //checkNode: cc.Node = null;
-
-  //@property(cc.Node)
-  //mendSignNode: cc.Node = null;
-
-  //@property(cc.Node)
-  //signLayoutNode: cc.Node = null;
-
-  /*@property({
-    type: [cc.SpriteFrame],
-    tooltip: "0分享，1视频",
-  })
-  mendSignSpriteFrames: cc.SpriteFrame[] = [];*/
+  getedSpr:cc.SpriteFrame = null;
 
   /**
    * 补签点击事件
@@ -78,26 +54,26 @@ export default class SignItemView extends cc.Component {
   }
 
   //   更新签到状态
-  updateSignState(state: boolean) {
+  updateSignState(state: boolean, iconSpr:cc.SpriteFrame) {
     this._signState = state;
-    var  coinSpr  = this.coinNode.getComponent(cc.Sprite);
+    let  coinSpr  = this.coinNode.getComponent(cc.Sprite);
     if(this._signState == true)
     {
       this.getLabel.node.active = true;
       this.rewardLabel.node.active = false;
-      coinSpr.spriteFrame = this.coinRecv;
+      coinSpr.spriteFrame = iconSpr;
     }
     else
     {
       this.getLabel.node.active = false;
       this.rewardLabel.node.active = true;
-      coinSpr.spriteFrame = this.coinNormal;
+      coinSpr.spriteFrame = iconSpr;
     }
   }
   // 更新今天状态
   updateTodayState(state: boolean) {
     this._isToday = state;
-    var bgSpr = this.bgNode.getComponent(cc.Sprite);
+    let bgSpr = this.bgNode.getComponent(cc.Sprite);
     if(this._isToday == true)
     {
       bgSpr.spriteFrame = this.todaySpr;
@@ -105,6 +81,11 @@ export default class SignItemView extends cc.Component {
     else
     {
       bgSpr.spriteFrame = this.nonTodaySpr;
+    }
+
+    if(this._signState == true)
+    {
+      bgSpr.spriteFrame = this.getedSpr;
     }
   }
 

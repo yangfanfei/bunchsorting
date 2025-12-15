@@ -1952,14 +1952,17 @@
     "coinSpr": {
       "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
     },
+    "coinGetedSpr": {
+      "__uuid__": "28c6c743-a35b-4be5-ae05-4ee3cf763b71"
+    },
     "resetSpr": {
-      "__uuid__": "0cc04202-b110-49c4-a056-5f5b3b1b2046"
+      "__uuid__": "628ab069-8645-4600-871a-959bcca8d2ad"
     },
     "backSpr": {
-      "__uuid__": "6b03c5aa-b6ed-43c8-93dc-05f8e0e8cc66"
+      "__uuid__": "4ce62069-cbbe-4be5-bb55-ec7d35fc6590"
     },
     "bunchSpr": {
-      "__uuid__": "77002cb3-1577-4439-849c-e2ad010f6f07"
+      "__uuid__": "eca49c48-1e99-4f0c-a560-3095209ab0fc"
     },
     "_id": ""
   },

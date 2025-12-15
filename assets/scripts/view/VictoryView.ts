@@ -73,7 +73,7 @@ export default class VictoryView extends BaseView {
   onNextLevelClick(){
     if(this.tubeReward > 0)
     {
-      Global.addToolSetting("tube", 1);
+      Global.addToolSetting("bunch", 1);
       cc.director.emit(events.AddBunch);
     }
     if(this.fallbackReward > 0)

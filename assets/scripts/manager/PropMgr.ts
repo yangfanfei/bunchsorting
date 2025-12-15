@@ -22,6 +22,9 @@ export default class PropMgr extends cc.Component {
   @property(cc.Node)
   numNode: cc.Node = null;
 
+  @property(cc.Node)
+  numValueNode: cc.Node = null;
+
   private num: number = 0;
   private state: PropState = PropState.Video;
 
@@ -32,7 +35,7 @@ export default class PropMgr extends cc.Component {
   showNodeByState() {
     if (this.num > 0) {
       this.numNode.active = true;
-      this.numNode.getComponent(cc.Label).string = this.num.toString();
+      this.numValueNode.getComponent(cc.Label).string = this.num.toString();
       this.videoNode.active = false;
       this.shareNode.active = false;
     } else {

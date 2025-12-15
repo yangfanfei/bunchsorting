@@ -16,9 +16,9 @@ const {ccclass, property} = cc._decorator;
 export default class MainView extends BaseView {
 
     @property(cc.Label)
-    label: cc.Label = null;
-    @property(cc.Node)
-    content: cc.Node = null;
+    coinLabel: cc.Label = null;
+    //@property(cc.Node)
+    //content: cc.Node = null;
     @property(cc.Label)
     lvLabel: cc.Label = null;
 
@@ -35,6 +35,7 @@ export default class MainView extends BaseView {
 
     start () {
       this.setLvLabel();
+      this.setCoinLabel();
       MainView.ins = this;
     }
 
@@ -46,6 +47,10 @@ export default class MainView extends BaseView {
         lv = Global.lv;
       }
       this.lvLabel.string = "第" + lv + "关"; 
+    }
+
+    setCoinLabel(){
+      this.coinLabel.string = Global.getCurrentCoin().toString();
     }
 
     async onStartGameClick() {
@@ -73,12 +78,18 @@ export default class MainView extends BaseView {
 
     }
 
+    async onSettingClick(){
+
+    }
+
+
     eventLevelChange(){
       this.setLvLabel();
     }
 
     eventBackToMain(){
       this.setLvLabel();
+      this.setCoinLabel();
     }
       
     // update (dt) {}

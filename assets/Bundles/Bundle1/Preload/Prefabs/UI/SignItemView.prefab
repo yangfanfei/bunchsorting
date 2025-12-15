@@ -719,6 +719,9 @@
     "nonTodaySpr": {
       "__uuid__": "580ad658-16c5-4fce-ae16-4b907a840b93"
     },
+    "getedSpr": {
+      "__uuid__": "e3da833d-29c0-4979-a550-9c5d77967179"
+    },
     "coinNormal": {
       "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
     },

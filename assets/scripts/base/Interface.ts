@@ -100,7 +100,7 @@ export interface ToolInfos {
   /** id */
   id: number;
   /** key */
-  key: "reset" | "back" | "tube" ;
+  key: "reset" | "back" | "bunch" ;
   /** count */
   num: number;
 }

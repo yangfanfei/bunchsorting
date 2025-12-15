@@ -121,25 +121,24 @@ export default class GameView extends BaseView {
   }
 
   onceAdd = false
-  /** add Tube */
-  public onAddTubeClick(e: cc.Event.EventTouch) {
+  public onAddBunchClick(e: cc.Event.EventTouch) {
     if (this.onceAdd) {
-      cc.director.emit(events.Toast, `Only add one tuber per level`)
+      cc.director.emit(events.Toast, `Only add one bunch per level`)
       return
     }
 
-   if (Global.getToolSetting("tube") > 0) {
-      Global.addToolSetting("tube", -1);
+   //if (Global.getToolSetting("bunch") > 0) {
+   //   Global.addToolSetting("bunch", -1);
       this.onceAdd = true
       cc.director.emit(events.AddBunch);
-    } else {
-      console.log(e.target);
-      SdkMgr.showRewardAD(() => {
-        this.onceAdd = true
-        cc.director.emit(events.AddBunch);
-      });
-    }
-    this.setProps(Global._toolSetting);
+   // } else {
+   //   console.log(e.target);
+   //   SdkMgr.showRewardAD(() => {
+   //     this.onceAdd = true
+   //     cc.director.emit(events.AddBunch);
+   //   });
+    //}
+    //this.setProps(Global._toolSetting);
   }
 
   public onTimeStopClick(e: cc.Event.EventTouch) {

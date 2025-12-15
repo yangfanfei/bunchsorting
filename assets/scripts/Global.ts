@@ -238,11 +238,16 @@ export class Global {
   }
 
   static loadSignData(){
-    let signData = load(Key.SignDate)
+    let signData = load(Key.SignDate, 0)
     return signData
   }
 
   static saveSignData(saveStr:String){
+    console.log(" SaveSignData::::::::::: ",saveStr);
     save(Key.SignDate, saveStr);
+  }
+
+  static clearSignData(){
+    save(Key.SignDate, "");
   }
 }

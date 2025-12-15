@@ -134,6 +134,39 @@ export default class Bunch extends cc.Component{
         return finishedState; 
     }
 
+    public removeOneColor(colorID:Number){
+        let startIndex  = 0
+        let endIndex = startIndex + SPLIT_COUNT;
+        for(;startIndex < endIndex; ++startIndex)
+        {
+            if(this.info.colorIds[startIndex] == colorID)
+            {
+                this.info.colorIds[startIndex] = 0;
+            }
+        }
+
+        let tmpArr = []
+        startIndex = 0;
+        for(; startIndex < SPLIT_COUNT; ++startIndex)
+        {
+            let colorID = this.info.colorIds[startIndex]
+            if(colorID != 0)
+            {
+                tmpArr.push(colorID)
+            }
+        }
+
+        startIndex = tmpArr.length
+        for(; startIndex < SPLIT_COUNT; ++startIndex)
+        {
+            tmpArr.unshift(0)
+        }
+
+        //console.log(" TmpArr::::::  ",tmpArr);
+        this.info.colorIds = tmpArr;
+        this.initBunchData();
+    }
+
     public getTopEmptyCount(){
         let emptyNum = 0;
         for (let i = 0; i < SPLIT_COUNT; i++) {

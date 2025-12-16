@@ -1,0 +1,8 @@
+{
+  "engine": "cocos-creator-js",
+  "packages": "packages",
+  "name": "sub-project",
+  "id": "5c838c12-d816-4047-834e-e0d93c1a4826",
+  "version": "2.4.15",
+  "isNew": false
+}

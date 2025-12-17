@@ -1,0 +1,20 @@
+
+gongxihuode.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+gxhd
+  rotate: false
+  xy: 70, 332
+  size: 381, 119
+  orig: 386, 124
+  offset: 3, 2
+  index: -1
+lizi1
+  rotate: false
+  xy: 2, 385
+  size: 66, 66
+  orig: 68, 68
+  offset: 1, 1
+  index: -1

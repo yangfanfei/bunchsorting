@@ -1,0 +1,76 @@
+
+zhuanquan.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: false
+  xy: 2, 424
+  size: 240, 258
+  orig: 271, 272
+  offset: 15, 9
+  index: -1
+02
+  rotate: false
+  xy: 244, 383
+  size: 240, 258
+  orig: 271, 272
+  offset: 15, 7
+  index: -1
+03
+  rotate: false
+  xy: 486, 341
+  size: 240, 258
+  orig: 271, 272
+  offset: 14, 7
+  index: -1
+04
+  rotate: false
+  xy: 546, 601
+  size: 240, 256
+  orig: 271, 272
+  offset: 13, 8
+  index: -1
+fsguang
+  rotate: false
+  xy: 2, 93
+  size: 297, 288
+  orig: 300, 294
+  offset: 1, 5
+  index: -1
+guang4
+  rotate: false
+  xy: 301, 2
+  size: 344, 337
+  orig: 354, 353
+  offset: 10, 7
+  index: -1
+sankai1
+  rotate: false
+  xy: 338, 643
+  size: 206, 214
+  orig: 271, 272
+  offset: 36, 36
+  index: -1
+xg1
+  rotate: false
+  xy: 163, 684
+  size: 173, 173
+  orig: 209, 206
+  offset: 18, 14
+  index: -1
+xg2
+  rotate: false
+  xy: 2, 802
+  size: 56, 55
+  orig: 56, 55
+  offset: 0, 0
+  index: -1
+xg3
+  rotate: false
+  xy: 60, 754
+  size: 101, 103
+  orig: 114, 116
+  offset: 7, 6
+  index: -1

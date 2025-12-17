@@ -1,9 +1,7 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+/*
+ * @Author: jxgamestudio
+ * @Description:  RankList View
+ */
 
 import { LinkType, SubContent } from "../sdk/WX/SubContent";
 import BaseView from "./BaseView";
@@ -43,19 +41,23 @@ export default class RankListView extends BaseView {
         // }, 2000);
     }
     changeState(e, index: TabIndex) {
-        this.currentIndex = index;
+        /*this.currentIndex = index;
         this.btnsNode.children.forEach((node: cc.Node, index) => {
             node.getComponent(cc.Sprite).spriteFrame = this.imgs[index].defaultImg;
         });
         setTimeout(() => {
             SubContent.getData(index as unknown as LinkType)
         }, 300);
-        this.btnsNode.children[index - 1].getComponent(cc.Sprite).spriteFrame = this.imgs[index - 1].checkImg;
+        this.btnsNode.children[index - 1].getComponent(cc.Sprite).spriteFrame = this.imgs[index - 1].checkImg;*/
     }
-    goBack() {
+    onClickClose() {
         super.close();
         //  PoolMgr.ins.getNode("HomeView", this.node.parent);
         this.node.destroy();
+    }
+
+    onClickShare(){
+        console.log(" OnClick.Share......................  ");
     }
     // update (dt) {}
 }

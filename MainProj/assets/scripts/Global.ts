@@ -124,6 +124,7 @@ export class Global {
     this._toolSetting[key] += +value;
     save(Key.ToolSetting, JSON.stringify(this._toolSetting));
   }
+
   /**
    *  get Tool Setting
    * @returns
@@ -131,6 +132,7 @@ export class Global {
   static getToolSetting(key: ToolInfos["key"]) {
     return +this._toolSetting[key];
   }
+
   /**
    * add Level
    */
@@ -146,6 +148,7 @@ export class Global {
     }
     save(Key.Lv, this.lv);
   }
+  
   /**
    * Sub Level
    */

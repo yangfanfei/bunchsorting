@@ -20,14 +20,10 @@ export class LinkImg {
 @ccclass
 export default class Rank extends cc.Component {
 
-    @property([LinkImg])
-    oneToThree: LinkImg[] = [];
-    @property(cc.Node)
-    topNode: cc.Node = null;
     @property(cc.Prefab)
     rankItemPrefab: cc.Prefab = null;
-    @property(RankItem)
-    myRankItem: RankItem = null;
+    //@property(RankItem)
+    //myRankItem: RankItem = null;
 
     @property(cc.ScrollView)
     scrollView: cc.ScrollView = null;
@@ -43,7 +39,6 @@ export default class Rank extends cc.Component {
     // LIFE-CYCLE CALLBACKS:
 
     private dataList: LinkItemData[] = []
-    private topList: LinkItemData[] = []
     // onLoad () {}
 
     init(arr: LinkItemData[], openid: string) {
@@ -51,11 +46,8 @@ export default class Rank extends cc.Component {
         this.content.removeAllChildren();
         this.dataList = arr.sort((a, b) => +b.maxLv - +a.maxLv);
         let courceData = this.dataList = arr.map((item, i) => ({ ...item, num: i + 1 }))
-        this.topList = this.dataList.slice(0, 3);
-        this.dataList = this.dataList.slice(3);
         let nums = arr.length - 3;
         this.content.height = nums * (this.receiveItemHeight + this.spacing);
-        this.setTopData(this.topList)
         for (let i = 0; i < this.dataList.length; i++) {
             let item = this.dataList[i];
             let itemPre = cc.instantiate(this.rankItemPrefab);
@@ -64,25 +56,11 @@ export default class Rank extends cc.Component {
             itemPre.parent = this.content;
         }
         const one = courceData.find(item => item.openid === openid);
-        if (one) this.myRankItem.setData(one);
-
+        //if (one) this.myRankItem.setData(one);
         //滚动到0位置
         this.scrollView.scrollToTop(0);
     }
 
-    async setTopData(arr: LinkItemData[]) {
-        const chnidren = this.topNode.children;
-        for (let i = 0; i < chnidren.length; i++) {
-            const itemNode = chnidren[i];
-            const item = arr[i];
-            if (!item) return
-            itemNode.getChildByName('lvLabel').getComponent(cc.RichText).string = `<color=#FFFFFF>最高 <b><size=24><color=#F5DA6A>${item.maxLv}</color></size></b> 关</color>`;
-            itemNode.getChildByName('name').getComponent(cc.Label).string = item.name;
-            // itemNode.getChildByName('oneLabel').getComponent(cc.Label).string = item.name;
-            itemNode.getChildByName('HeaderImg').getComponent(cc.Sprite).spriteFrame = await updateAvatar(item.img);
-            // updateAvatar
-        }
-    }
     private linkType: LinkType = null
     // 刷新
     openid: string = '';
@@ -94,10 +72,10 @@ export default class Rank extends cc.Component {
     start() {
         // this.linkType = LinkType.Default
         // this.init(list);
-
     }
     changeState(sate: LinkType.Challenge | LinkType.Default) {
-        const firstBg = this.topNode.getChildByName('firstBg')
+        console.log(" Rank.ChangeState..................  ");
+        /*const firstBg = this.topNode.getChildByName('firstBg')
         const secondBg = this.topNode.getChildByName('secondBg')
         const thirdBg = this.topNode.getChildByName('thirdBg')
         switch (sate) {
@@ -116,7 +94,7 @@ export default class Rank extends cc.Component {
                 firstBg.getChildByName('oneLabel').color = new cc.Color(250, 232, 76);;
                 firstBg.getChildByName('name').color = new cc.Color(255, 255, 255);;
                 break;
-        }
+        }*/
     }
     // update (dt) {}
 }

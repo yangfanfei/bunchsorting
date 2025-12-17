@@ -69,7 +69,6 @@ export default class GameView extends BaseView {
   start() {
     save('isPlayGame', true)
     GameView.ins = this;
-    console.log(" GameView:::::::::::  Start.... ");
     CoinMgr.ins.setCoinLabel();
   }
 
@@ -79,7 +78,6 @@ export default class GameView extends BaseView {
 
   setLvLabel(_lv?: number) {
     let lv = _lv;
-    console.log(" _Lv:::: ",_lv,"  Global.Lv:::  ",Global.lv);
     if(_lv == null || _lv == 0)
     {
       lv = Global.lv;

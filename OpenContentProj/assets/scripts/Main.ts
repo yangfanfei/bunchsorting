@@ -1,10 +1,3 @@
-// Learn TypeScript:
-//  - https://docs.cocos.com/creator/manual/en/scripting/typescript.html
-// Learn Attribute:
-//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
-
 import Rank from "./Rank";
 import { LinkItemData, LinkType } from "./RankItem";
 
@@ -35,8 +28,10 @@ export default class NewClass extends cc.Component {
     private rank: Rank = null;
 
     protected onLoad() {
+        this.updateRankList([],LinkType.Default,"");
         if (cc.sys.platform !== cc.sys.WECHAT_GAME_SUB) return;
         // 监听来自主域的消息
+        //this.updateRankList([],LinkType.Default,"");
         wx.onMessage((msg: any) => this.onMessage(msg));
     }
     openid: string = '';
@@ -46,7 +41,7 @@ export default class NewClass extends cc.Component {
      * @param msg 消息
      */
     private onMessage(msg: any) {
-        console.log(msg, 'msgmsgmsg');
+        console.log('RankMain.msgmsgmsg.Data::: ',msg);
         msg.type = LinkType.Challenge
         this.openid = msg.openid;
 
@@ -165,8 +160,21 @@ export default class NewClass extends cc.Component {
                 openid: item.openid,
             })
             // }
-
         }
+
+        //// testData......
+        /*for(let i = 0; i < 10; ++i)
+        {
+            arr.push({
+                name: "测试"+ i,
+                num: i + 1,
+                maxLv: i*5 + "",
+                img: "",
+                openid: "1111"+i,
+            })
+        }*/
+
+
         // 更新排行榜
         this.rank.refresh(type, arr, this.openid || openid);
         console.log('[updateRankList]', data, arr);
@@ -178,12 +186,10 @@ export default class NewClass extends cc.Component {
      */
     private showLoading() {
         console.log(wx.showLoading, 'wxwxwx');
-
         // this.loading.active = true;
         // wx.showLoading({
         //     title: '加载中',
         // })
-
     }
 
     /**

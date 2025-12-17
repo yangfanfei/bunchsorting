@@ -4,6 +4,7 @@
  */
 
 import MainView from "../view/MainView";
+import RankListView from "../view/RankListView";
 import SignView from "../view/SignView";
 
 const { ccclass, property } = cc._decorator;
@@ -177,6 +178,7 @@ export const ui = {
   ToastView: { name: 'ToastView', layer: 6, clear: false },
   SettingView: { name: 'SettingView', layer: 6, clear: false },
   SignView: { name: "SignView", layer: 6, clear: false },
+  RankListView: { name: "RankListView", layer: 6, clear: false },
 };
 
 export const prop = {

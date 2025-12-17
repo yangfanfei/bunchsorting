@@ -350,7 +350,7 @@ export default class SignView extends BaseView {
 
       //propsView.parent = this.node;
 
-      this.showGetItemView(spr);
+      this.showGetItemView(spr,item.num);
 
       this.addSignType(item.type);
       Global.addSignArr(item.type);
@@ -401,7 +401,7 @@ export default class SignView extends BaseView {
     }
   }
 
-  async showGetItemView(itemSpr:cc.SpriteFrame){
+  async showGetItemView(itemSpr:cc.SpriteFrame, count:number){
       SoundMgr.ins.playSound(Clips.modal, 0.5);
 
       const GetItemViewUI = await ResMgr.ins.getUI(
@@ -409,7 +409,7 @@ export default class SignView extends BaseView {
       );
       const itemViewScrpit = GetItemViewUI.getComponent(GetItemView);
 
-      itemViewScrpit.setTitleImg();
+      itemViewScrpit.setItemCount(count);
       itemViewScrpit.setPropImg(itemSpr);
       GetItemViewUI.parent = this.node;
   }

@@ -70,18 +70,17 @@ export default class MainView extends BaseView {
 
     async onSignClick(){
         const view = await ResMgr.ins.getUI(ui.SignView);
-        let signView = view.getComponent(SignView);
         view.parent = this.node.parent;
     }
 
     async onRankClick(){
-
+        const view = await ResMgr.ins.getUI(ui.RankListView);
+        view.parent = this.node.parent;
     }
 
     async onSettingClick(){
 
     }
-
 
     eventLevelChange(){
       this.setLvLabel();

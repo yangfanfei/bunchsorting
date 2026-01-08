@@ -33,9 +33,14 @@ export default class MainView extends BaseView {
       cc.director.off(events.BackToMain, this.eventBackToMain, this);
     }
 
-    start () {
+    onLoad(): void {
       this.setLvLabel();
       this.setCoinLabel();
+    }
+
+    start () {
+      //this.setLvLabel();
+      //this.setCoinLabel();
       MainView.ins = this;
     }
 
@@ -79,7 +84,8 @@ export default class MainView extends BaseView {
     }
 
     async onSettingClick(){
-
+        const view = await ResMgr.ins.getUI(ui.SettingView);
+        view.parent = this.node.parent;
     }
 
     eventLevelChange(){

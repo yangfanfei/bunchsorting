@@ -24,7 +24,7 @@ export class Global {
   /** current level */
   static lv = 1;
   /** max level */
-  static maxLv = 300;
+  static maxLv = 900;
   /** current max level */
   static currentMaxLv = 1;
   /** max Tube */

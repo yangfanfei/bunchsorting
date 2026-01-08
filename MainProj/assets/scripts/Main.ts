@@ -20,14 +20,14 @@ export default class Main extends cc.Component {
   @property({ type: cc.Integer, tooltip: "Current Level" })
   currentLevel = 5;
 
-  @property({ type: adConfig, tooltip: "Ad Config" })
+  /*@property({ type: adConfig, tooltip: "Ad Config" })
   Platforms: adConfig[] = [];
 
   @property({ type: shareConfig, tooltip: "Share Config" })
   Shares: shareConfig[] = [];
 
   @property({ type: shareVideoConfig, tooltip: "Share Video Config" })
-  ShareVideoes: shareVideoConfig[] = [];
+  ShareVideoes: shareVideoConfig[] = [];*/
 
   public static ins: Main = null;
 
@@ -92,7 +92,8 @@ export default class Main extends cc.Component {
     Global.codeList = codeList ? codeList : Global._codeList;
 
     const currentCoin = load(Key.CoinCount)
-    Global.currentCoin = currentCoin;
+    Global.currentCoin = currentCoin ? currentCoin : Global.currentCoin;
+
     // Global.setLv(this.currentLevel);
   }
   // update (dt) {}

@@ -69,7 +69,6 @@ export default class GameView extends BaseView {
   start() {
     save('isPlayGame', true)
     GameView.ins = this;
-    CoinMgr.ins.setCoinLabel();
   }
 
   setAllFinish(val:boolean){

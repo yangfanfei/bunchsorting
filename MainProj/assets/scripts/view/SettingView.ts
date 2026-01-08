@@ -20,18 +20,18 @@ export class SpriteFrameState {
 
 @ccclass
 export default class SettingView extends BaseView {
-  @property(SpriteFrameState)
-  sound: SpriteFrameState = null;
-  @property(cc.Sprite)
-  soundSprite: cc.Sprite = null;
+  //@property(SpriteFrameState)
+  //sound: SpriteFrameState = null;
+  @property(cc.Node)
+  soundNode: cc.Node = null;
   start() {
     this.checkSpriteFrame();
   }
   checkSpriteFrame() {
       if (Global.sound == 1) {
-        this.soundSprite.spriteFrame = this.sound.on;
+        this.soundNode.active = true;
       } else {
-        this.soundSprite.spriteFrame = this.sound.off;
+        this.soundNode.active = false;
       }
   }
   changeSound() {

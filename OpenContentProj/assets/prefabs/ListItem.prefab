@@ -280,8 +280,10 @@
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -692,8 +694,10 @@
     "_fontSize": 32,
     "_lineHeight": 32,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -789,11 +793,13 @@
     },
     "_enabled": true,
     "_fontFamily": "Arial",
-    "_isSystemFontUsed": true,
+    "_isSystemFontUsed": false,
     "_N$string": "<color=#6ca9c4><b><size=32>18关</b> </size></color>",
     "_N$horizontalAlign": 1,
     "_N$fontSize": 32,
-    "_N$font": null,
+    "_N$font": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
     "_N$cacheMode": 1,
     "_N$maxWidth": 130,
     "_N$lineHeight": 50,

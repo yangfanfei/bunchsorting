@@ -24,6 +24,10 @@ export default class CoinMgr extends cc.Component {
         //this.setCoinLabel();
     }
 
+    protected onLoad(): void {
+        this.setCoinLabel();
+    }
+
     setCoinLabel(){
         if(this.coinLabel)
         {

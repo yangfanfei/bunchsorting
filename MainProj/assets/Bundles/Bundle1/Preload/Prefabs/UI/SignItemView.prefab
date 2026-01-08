@@ -283,8 +283,10 @@
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -519,8 +521,10 @@
     "_fontSize": 36,
     "_lineHeight": 36,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -591,7 +595,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 76.74,
+      "width": 70.31,
       "height": 60.4
     },
     "_anchorPoint": {
@@ -648,8 +652,10 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -721,12 +727,6 @@
     },
     "getedSpr": {
       "__uuid__": "e3da833d-29c0-4979-a550-9c5d77967179"
-    },
-    "coinNormal": {
-      "__uuid__": "b8ed1cfd-2a4f-4abc-9b11-e0c9791b054a"
-    },
-    "coinRecv": {
-      "__uuid__": "28c6c743-a35b-4be5-ae05-4ee3cf763b71"
     },
     "_id": ""
   },

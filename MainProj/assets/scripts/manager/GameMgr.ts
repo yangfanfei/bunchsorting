@@ -90,18 +90,16 @@ export default class GameMgr extends cc.Component {
    */
   public startGame() {
     Global.action_list = [];
-
     console.log(" GameMgr.StartGame..........");
     this.initCfg();
     this.createBunches();
     if(CoinMgr.ins)
     {
-      console.log("CoinMgr::::::: ",CoinMgr.ins);
-       CoinMgr.ins.setCoinLabel();
+      CoinMgr.ins.setCoinLabel();
     }
     if(GameView.ins)
     {
-       GameView.ins.setAllFinish(false);
+      GameView.ins.setAllFinish(false);
     }
     /*if (Global.lv === 1) {
       console.log(" startGame........... LV:: ",Global.lv);
@@ -326,7 +324,7 @@ export default class GameMgr extends cc.Component {
         id1 = 5;
         id2 = 9;
       }
-      else if(len == 14)
+      else if(len >= 14)
       {
         id1 = 5;
         id2 = 10;

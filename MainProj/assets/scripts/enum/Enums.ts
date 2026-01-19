@@ -167,6 +167,7 @@ export const events = {
   Pause: "Pause",
   LevelSelectChange: "LevelSelectChange",
   BackToMain: "BackToMain",
+  ToolItemChange: "ToolItemChange",
 };
 
 /* for ui prefabs config */

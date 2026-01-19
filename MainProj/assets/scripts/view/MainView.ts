@@ -61,7 +61,7 @@ export default class MainView extends BaseView {
     async onStartGameClick() {
         const view = await ResMgr.ins.getUI(ui.GameView);
         let gameView = view.getComponent(GameView);
-        gameView.init();
+        gameView.init(Global.lv);
         view.parent = this.node.parent;
     }
 

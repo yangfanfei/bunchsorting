@@ -73,8 +73,10 @@ export class Global {
     reset: 1,
     /** fall back */
     back: 1,
-    /** add tube */
-    tube: 1,
+    /** add bunch */
+    bunch: 1,
+    /** finish */
+    finish: 1,
   };
 
   /** cup config */
@@ -99,22 +101,6 @@ export class Global {
   }
   static set cupSetting(value) {
     this._cupSetting = value;
-  }
-  static setCupCurrent(val) {
-    //console.log(" Set Cup Current::: ",val);
-    Global._cupSetting.current = val == Global._cupSetting.current ? null : val;
-    save(Key.CupSetting, JSON.stringify(Global._cupSetting));
-  }
-  static setCupHavaList(val) {
-    //console.log(" Set Cup Have List::: ",val);
-    if (Global._cupSetting.haveList.includes(val)) return;
-    Global._cupSetting.haveList.push(val);
-    //console.log(" After Set Cup Have List::: ",Global._cupSetting.haveList);
-    save(Key.CupSetting, JSON.stringify(Global._cupSetting));
-  }
-  static resetCupHaveList(){
-    Global._cupSetting.haveList = ['01'];
-    Global._cupSetting.current = "01";
   }
 
   /**

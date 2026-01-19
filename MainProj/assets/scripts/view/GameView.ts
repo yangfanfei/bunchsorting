@@ -18,7 +18,8 @@ import GameMgr from "../manager/GameMgr";
 interface Props {
   reset: number;
   back: number;
-  tube: number;
+  bunch: number;
+  finish: number;
 }
 const { ccclass, property } = cc._decorator;
 
@@ -28,13 +29,13 @@ export default class GameView extends BaseView {
   lvLabel: cc.RichText = null;
 
   @property(PropMgr)
-  resetMgr: PropMgr = null;
-
-  @property(PropMgr)
   backMgr: PropMgr = null;
 
   @property(PropMgr)
-  tubeMgr: PropMgr = null;
+  bunchMgr: PropMgr = null;
+
+  @property(PropMgr)
+  finishMgr: PropMgr = null;
 
   @property(cc.Prefab)
   coinPrefab: cc.Prefab = null;
@@ -57,6 +58,7 @@ export default class GameView extends BaseView {
     cc.director.on(events.AddBunch, this.toolCountChange, this);
     cc.director.on(events.Back, this.toolCountChange, this);
     cc.director.on(events.Reset, this.toolCountChange, this);
+    cc.director.on(events.ToolItemChange, this.toolCountChange, this);
   }
   onDisable() {
     cc.director.off(events.LevelFinish, this.GameResult, this);
@@ -64,6 +66,7 @@ export default class GameView extends BaseView {
     cc.director.off(events.AddBunch, this.toolCountChange, this);
     cc.director.off(events.Back, this.toolCountChange, this);
     cc.director.off(events.Reset, this.toolCountChange, this);
+    cc.director.off(events.ToolItemChange, this.toolCountChange, this);
   }
 
   start() {
@@ -82,6 +85,12 @@ export default class GameView extends BaseView {
       lv = Global.lv;
     }
     this.lvLabel.string = `<b><color=#608bc1><outline color=#000000 width=2>level </outline></c><color=#FAFAFA><outline color=#000000 width=2>${lv}</outline></c></b>`; 
+  }
+
+  addTool(){
+   // Global.addToolSetting("back", 1);
+   //Global.addToolSetting("bunch", 1);
+    //Global.addToolSetting("finish", 1);
   }
 
   //#region 
@@ -104,7 +113,6 @@ export default class GameView extends BaseView {
   public onBackClick(e) {
     if (!GameMgr.ins.checkCanUndo()) return;
     
-    cc.director.emit(events.Back);
     if (Global.getToolSetting("back") > 0) {
       Global.addToolSetting("back", -1);
       cc.director.emit(events.Back);
@@ -114,6 +122,7 @@ export default class GameView extends BaseView {
          cc.director.emit(events.Back);
       });
     }
+
     this.setProps(Global._toolSetting);
   }
 
@@ -124,18 +133,33 @@ export default class GameView extends BaseView {
       return
     }
 
-   //if (Global.getToolSetting("bunch") > 0) {
-   //   Global.addToolSetting("bunch", -1);
+   if (Global.getToolSetting("bunch") > 0) {
+      Global.addToolSetting("bunch", -1);
       this.onceAdd = true
       cc.director.emit(events.AddBunch);
-   // } else {
+    } else {
    //   console.log(e.target);
    //   SdkMgr.showRewardAD(() => {
    //     this.onceAdd = true
    //     cc.director.emit(events.AddBunch);
    //   });
-    //}
-    //this.setProps(Global._toolSetting);
+    }
+    this.setProps(Global._toolSetting);
+  }
+
+  public onFinishClick(e:cc.Event.EventTouch){
+    if (Global.getToolSetting("finish") > 0) {
+      Global.addToolSetting("finish", -1);
+      console.log(" Btn.Click...  Finish...");
+      cc.director.emit(events.LevelFinish);
+    } else {
+   //   console.log(e.target);
+   //   SdkMgr.showRewardAD(() => {
+   //     this.onceAdd = true
+   //     cc.director.emit(events.AddBunch);
+   //   });
+    }
+    this.setProps(Global._toolSetting);
   }
 
   public onTimeStopClick(e: cc.Event.EventTouch) {
@@ -153,8 +177,7 @@ export default class GameView extends BaseView {
   }
 
   //#endregion
-
-    private tween: cc.Tween = null;
+  private tween: cc.Tween = null;
   public playCoinAnimation(cupNode:cc.Node)
   {
      let origPos = cupNode.position;
@@ -205,10 +228,10 @@ export default class GameView extends BaseView {
     this.initLevel = _lv;
     if(_lv != null)
     {
-      Global.lv = _lv;      
+      Global.lv = _lv;
     }
-
     this.setLvLabel(_lv);
+
     let toolSetting = load(Key.ToolSetting, 2);
     Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
     // TODO:
@@ -220,12 +243,25 @@ export default class GameView extends BaseView {
   }
 
   setProps(props: Props) {
-    this.resetMgr.setNum(props.reset);
+    this.bunchMgr.setNum(props.bunch);
     this.backMgr.setNum(props.back);
-    this.tubeMgr.setNum(props.tube);
+    this.finishMgr.setNum(props.finish);
   }
 
   eventLevelChange(){
     this.setLvLabel();
+  }
+
+  checkShowGuide(){
+    if(this.backMgr.checkGuideState() == false)
+    {
+      if(this.bunchMgr.checkGuideState() == false)
+      {
+        if(this.finishMgr.checkGuideState() == false)
+        {
+
+        }
+      }
+    }
   }
 }

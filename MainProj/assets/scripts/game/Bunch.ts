@@ -127,11 +127,36 @@ export default class Bunch extends cc.Component{
 
         ///  Same color and game is Passed
         if (sameColrCount == SPLIT_COUNT) {
-        finishedState = true;
+            finishedState = true;
         }
 
         //console.log("checkFinishImpDontChangeState. SplitCount:::: ",sameColrCount," CupIndex: ",this._cupIndex," FinishState: ",finishedState," TmpId: ",tmpId);
         return finishedState; 
+    }
+
+    checkCanMove(){
+        let  color = 0;
+        for(let i = this.info.colorIds.length-1; i >= 0; --i){
+            color = this.info.colorIds[i];
+            if(color != 0)
+            {
+                break
+            }
+        }
+
+        let bunchArrs = GameMgr.ins.getBunchs();
+        for(let k = 0; k < bunchArrs.length; ++k)
+        {
+            let bunch = bunchArrs[k];
+            let top = bunch.getTop();
+            if(top.topColorId == color)
+            {
+                return true;
+            }
+        }
+
+        console.log("  Current Bunch Index:: ",this.index," Top Color:: ",color)
+        return false;
     }
 
     public removeOneColor(colorID:Number){

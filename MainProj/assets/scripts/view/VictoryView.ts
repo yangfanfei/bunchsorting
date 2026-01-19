@@ -30,38 +30,55 @@ export default class VictoryView extends BaseView {
   curAwardTool: cc.Node = null;
 
   @property(cc.SpriteFrame)
-  tubeFrame: cc.SpriteFrame = null;
+  bunchFrame: cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
   fallbackFrame: cc.SpriteFrame = null;
 
+  @property(cc.SpriteFrame)
+  finishFrame: cc.SpriteFrame = null;
+
   private coinReward = 0;
-  private tubeReward = 0;
-  private fallbackReward = 0;
+  private bunchReward = 0;
+  private backReward = 0;
+  private finishReward = 0;
 
   init() {
     this.coinReward = Global.rewardCoin;
     this.curAwardLabel.string = "+" + this.coinReward.toString();
 
-    let random1 = randomNum(1,100);
-    let random2 = randomNum(1,10);
-
-    console.log(" RandomNumber1:: ",random1," RandomNumber2: ",random2);
-    if(random1 >= 50)    /// random have tool reward
+    let lastLv = Global.lv - 1
+    let rewardItem = false
+    if(lastLv > 0)
     {
-      if(random2 >= 5)
+      if(lastLv%5 ==0 || lastLv%10 == 0)
       {
-        this.curToolIcon.spriteFrame = this.fallbackFrame;
-        this.fallbackReward = 1;
+          rewardItem = true
+      }
+    }
+
+    console.log(" CurrentLevel:::::  ",Global.lv," RewardItem:: ",rewardItem);
+    if(rewardItem == true)    /// random have tool reward
+    {
+      let random1 = randomNum(1,100);
+      console.log(" randNum =============  ",random1);
+      if(random1 > 98)
+      {
+        this.curToolIcon.spriteFrame = this.finishFrame;
+        this.finishReward = 1;
+      }
+      else if(random1 > 85)
+      {
+        this.curToolIcon.spriteFrame = this.bunchFrame;
+        this.bunchReward = 1;
       }
       else
       {
-        this.curToolIcon.spriteFrame = this.tubeFrame;
-        this.tubeReward = 1;
+        this.curToolIcon.spriteFrame = this.fallbackFrame;
+        this.backReward = 1;
       }
 
       this.curToolLabel.string = "+1";
-
     }
     else
     {
@@ -71,16 +88,22 @@ export default class VictoryView extends BaseView {
   }
 
   onNextLevelClick(){
-    if(this.tubeReward > 0)
+    if(this.bunchReward > 0)
     {
       Global.addToolSetting("bunch", 1);
-      cc.director.emit(events.AddBunch);
+      cc.director.emit(events.ToolItemChange);
     }
-    if(this.fallbackReward > 0)
+    if(this.backReward > 0)
     {
       Global.addToolSetting("back", 1);
-      cc.director.emit(events.Back);
+      cc.director.emit(events.ToolItemChange);
     }
+    if(this.finishReward > 0)
+    {
+      Global.addToolSetting("finish", 1);
+      cc.director.emit(events.ToolItemChange);
+    }
+
     Global.addCoin(this.coinReward);
     CoinMgr.ins.setCoinLabel();
     this.loadNextLvel();

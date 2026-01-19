@@ -23,6 +23,9 @@ export default class PropMgr extends cc.Component {
   numNode: cc.Node = null;
 
   @property(cc.Node)
+  guideNode: cc.Node = null;
+
+  @property(cc.Node)
   numValueNode: cc.Node = null;
 
   private num: number = 0;
@@ -30,6 +33,7 @@ export default class PropMgr extends cc.Component {
 
   setNum(num: number) {
     this.num = num;
+    this.guideNode.active = false;
     this.showNodeByState();
   }
   showNodeByState() {
@@ -51,6 +55,21 @@ export default class PropMgr extends cc.Component {
   }
   setState(state: PropState) {
     this.state = state;
+  }
+
+  checkGuideState(){
+    console.log(" Check Guide State::::: ",this.node.name);
+    if(this.num > 0)
+    {
+      this.guideNode.active = true;
+      return true;
+    }
+    else
+    {
+      this.guideNode.active = false;
+    }
+
+    return false;
   }
   // LIFE-CYCLE CALLBACKS:
 

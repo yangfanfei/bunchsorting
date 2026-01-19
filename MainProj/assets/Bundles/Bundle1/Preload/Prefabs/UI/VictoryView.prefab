@@ -1698,11 +1698,14 @@
     "curAwardTool": {
       "__id__": 18
     },
-    "tubeFrame": {
+    "bunchFrame": {
       "__uuid__": "eca49c48-1e99-4f0c-a560-3095209ab0fc"
     },
     "fallbackFrame": {
       "__uuid__": "4ce62069-cbbe-4be5-bb55-ec7d35fc6590"
+    },
+    "finishFrame": {
+      "__uuid__": "eca49c48-1e99-4f0c-a560-3095209ab0fc"
     },
     "_id": ""
   },

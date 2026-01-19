@@ -100,6 +100,7 @@ export default class GameMgr extends cc.Component {
     if(GameView.ins)
     {
       GameView.ins.setAllFinish(false);
+      //GameView.ins.addTool();
     }
     /*if (Global.lv === 1) {
       console.log(" startGame........... LV:: ",Global.lv);
@@ -174,6 +175,10 @@ export default class GameMgr extends cc.Component {
     }
 
     return null;
+  }
+
+  public getBunchs(){
+    return this.curBunchs;
   }
 
   protected initCfg() {
@@ -515,7 +520,6 @@ export default class GameMgr extends cc.Component {
     //console.log(" Before.DestPos:::: ",desPos3,"  Dest.Count::: ",destTopEmptyCount);
     //let desPos4 = new cc.Vec3(desPos3.x, desPos3.y + 160 - (destTopEmptyCount)*65, desPos3.z);
     //console.log(" After.DestPos:::: ",desPos4);
-    
     for(var i = 0 ; i < moveCount; ++i)
     {
       let desPos4 = new cc.Vec3(desPos3.x, desPos3.y + 160 - (destTopEmptyCount - i)*65, desPos3.z);
@@ -546,11 +550,31 @@ export default class GameMgr extends cc.Component {
             //console.log(" AllFinish:::::::: Send.Event...........");
             cc.director.emit(events.LevelFinish);
           }
+          else
+          {
+            if(this.checkCanMove() == false)
+            {
+              GameView.ins.checkShowGuide();
+            }
+          }
         })
         .start();
     }
 
     //console.log(" StartMove.SrcInfo::: ",srcTopinfo," DestInfo: ",destTopInfo);
+  }
+
+  checkCanMove(){
+    for(let k = 0; k < this.curBunchs.length; ++k)
+    {
+      let  bunch = this.curBunchs[k]
+      if(bunch.checkCanMove() == true)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   createLayout(type: cc.Layout.Type, parent: cc.Node, name?: string) {

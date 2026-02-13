@@ -443,6 +443,7 @@ export default class GameMgr extends cc.Component {
   }
 
   private onClickBunch(bunch: Bunch) {
+    GameView.ins.setGuideStateHide();
     if (this.lastSelectBunch) {
       if (this.lastSelectBunch == bunch) {
         this.doSelect(bunch, false); 
@@ -538,7 +539,7 @@ export default class GameMgr extends cc.Component {
       this.tween = cc
         .tween(effectNode)
         .to(0.2+ i*0.075, { x: desPos1.x, y: desPos1.y }) 
-        .to(0.2+ i*0.075, { x: desPos2.x, y: desPos2.y }) 
+        .to(0.2+ i*0.075, { x: desPos2.x, y: desPos2.y })  
         .to(0.2+ i*0.075, { x: desPos4.x, y: desPos4.y }) 
         .call(() => {
           this.tween = null; 

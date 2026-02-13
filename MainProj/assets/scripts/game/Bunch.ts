@@ -12,6 +12,15 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class Bunch extends cc.Component{
 
+    @property(cc.Color)
+    shadowColor: cc.Color = cc.color(0, 0, 0, 128);
+    
+    @property(cc.Vec2)
+    shadowOffset: cc.Vec2 = cc.v2(10, -10);
+    
+    private shadowNode: cc.Node = null;
+    private shadowArr:Array<cc.Sprite> = [];
+
     private info: BunchInfo = null; 
     private index:number = 0;
     private _orignPt: cc.Vec3 = null;
@@ -34,14 +43,20 @@ export default class Bunch extends cc.Component{
             if(color == 0)
             {
                 this.sprArr[i].node.active = false;
+                this.shadowArr[i].node.active = false;
             }
             else
             {
                 this.sprArr[i].node.active = true;
                 this.sprArr[i].spriteFrame = GameMgr.ins.bunchImgs[color-1];
+                this.shadowArr[i].node.active = true;
+                this.shadowArr[i].spriteFrame = GameMgr.ins.bunchImgs[color-1];
                 //console.log("IIIIIII : ",i," Color: ",color," SprFrame:: ",GameMgr.ins.bunchImgs[color-1]);
             }
         }
+
+        //this.destoryShadow();
+        this.createShadow();
     }
 
     private initSprite(){
@@ -49,11 +64,79 @@ export default class Bunch extends cc.Component{
         for(var  i = 0; i < iCount; ++i)
         {
             var child = this.node.children[i];
-            var spr = child.getComponent(cc.Sprite);
-            if(spr)
+            if(child.name.includes("shadow"))
             {
-                this.sprArr.push(spr)
+                if(child.name.includes("bunch"))
+                {
+                    this.shadowNode = child;
+                }
+                else
+                {
+                    var spr = child.getComponent(cc.Sprite);
+                    if(spr)
+                    {
+                        this.shadowArr.push(spr)
+                    }
+                }
             }
+            else
+            {
+                if(child.name.includes("bunch") == false)
+                {
+                    var spr = child.getComponent(cc.Sprite);
+                    if(spr)
+                    {
+                        this.sprArr.push(spr)
+                    }
+                }
+            }
+        }
+    }
+
+    createShadow() {
+        // 创建阴影节点
+        /*this.shadowNode = new cc.Node('Shadow');
+        this.shadowNode.parent = this.node.parent;
+        this.shadowNode.zIndex = this.node.zIndex - 1;
+        
+        // 复制Sprite组件
+        const sprite = this.node.getComponent(cc.Sprite);
+        const shadowSprite = this.shadowNode.addComponent(cc.Sprite);
+        
+        shadowSprite.spriteFrame = sprite.spriteFrame;
+        shadowSprite.trim = sprite.trim;
+        shadowSprite.sizeMode = sprite.sizeMode;
+
+        this.shadowNode.color = new cc.Color(0,0,0);*/
+        
+        // 设置阴影颜色
+        //this.shadowNode.color = this.shadowColor;
+        
+        // 更新位置
+        this.updateShadowPosition();
+    }
+    
+    updateShadowPosition() {
+        //if (!this.shadowNode) return;
+        
+        const worldPos = this.node.convertToWorldSpaceAR(cc.Vec2.ZERO);
+        const localPos = this.shadowNode.parent.convertToNodeSpaceAR(worldPos);
+        //console.log(" UpdateShadowPosition:: ", localPos," WorldPos:: ",worldPos);
+        this.shadowNode.setPosition(
+            localPos.x + this.shadowOffset.x,
+            localPos.y + this.shadowOffset.y
+        );
+        //this.shadowNode.scale = this.node.scale;
+        //this.shadowNode.angle = this.node.angle;
+
+        for(let i = 0; i < this.sprArr.length; ++i)
+        {
+            let sprNode = this.sprArr[i];
+            let sprShadowNode = this.shadowArr[i];
+            sprShadowNode.node.setPosition(            
+                sprNode.node.position.x + this.shadowOffset.x,
+                sprNode.node.position.y + this.shadowOffset.y
+            );
         }
     }
 
@@ -96,6 +179,9 @@ export default class Bunch extends cc.Component{
             this.info.colorIds[startIndex] = colorId;
             this.sprArr[startIndex].node.active = true;
             this.sprArr[startIndex].spriteFrame = GameMgr.ins.bunchImgs[colorId-1];
+
+            this.shadowArr[startIndex].node.active = true;
+            this.shadowArr[startIndex].spriteFrame = GameMgr.ins.bunchImgs[colorId-1];
         }
     }
 
@@ -108,6 +194,8 @@ export default class Bunch extends cc.Component{
         {
             this.info.colorIds[startIndex] = 0;
             this.sprArr[startIndex].node.active = false
+
+            this.shadowArr[startIndex].node.active = false
         }
     }
 
@@ -149,7 +237,8 @@ export default class Bunch extends cc.Component{
         {
             let bunch = bunchArrs[k];
             let top = bunch.getTop();
-            if(top.topColorId == color)
+            let emptyNum = bunch.getTopEmptyCount();
+            if(top.topColorId == color && emptyNum > 0)
             {
                 return true;
             }
@@ -227,6 +316,7 @@ export default class Bunch extends cc.Component{
 
     setOrignPt(pt: cc.Vec3) {
         this._orignPt = pt;
+        this.updateShadowPosition();
     }
 
     getIndex(){

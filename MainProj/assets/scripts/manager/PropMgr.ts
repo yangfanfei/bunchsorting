@@ -71,6 +71,11 @@ export default class PropMgr extends cc.Component {
 
     return false;
   }
+
+  hideGuideState()
+  {
+    this.guideNode.active = false;
+  }
   // LIFE-CYCLE CALLBACKS:
 
   // onLoad () {}

@@ -55,7 +55,6 @@ export class Global {
     this._receiveList = v;
   }
 
-
   static setReceiveList(value: string) {
     Global._receiveList.push(value)
     this.saveReceiveListLocal()

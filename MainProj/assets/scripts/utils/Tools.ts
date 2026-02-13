@@ -18,7 +18,6 @@ function CreateElementForExecCommand(textToClipboard) {
 }
 
 function SelectContent(element) {
-
   var rangeToSelect = document.createRange();
   rangeToSelect.selectNodeContents(element);
 

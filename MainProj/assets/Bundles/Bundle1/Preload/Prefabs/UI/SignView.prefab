@@ -1848,11 +1848,26 @@
     "resetSpr": {
       "__uuid__": "628ab069-8645-4600-871a-959bcca8d2ad"
     },
+    "resetGetedSpr": {
+      "__uuid__": "b8725a50-3db6-4abd-9520-af78f41d355b"
+    },
     "backSpr": {
       "__uuid__": "4ce62069-cbbe-4be5-bb55-ec7d35fc6590"
     },
+    "backGetedSpr": {
+      "__uuid__": "afaea41f-3465-4e8b-bec7-410787c7d8b3"
+    },
     "bunchSpr": {
       "__uuid__": "eca49c48-1e99-4f0c-a560-3095209ab0fc"
+    },
+    "bunchGetedSpr": {
+      "__uuid__": "76c2a895-d150-4830-921a-8ecc4012a776"
+    },
+    "finishSpr": {
+      "__uuid__": "e62cf9b3-b4ab-4567-b597-6206a7e2d24d"
+    },
+    "finishGetedSpr": {
+      "__uuid__": "afaea41f-3465-4e8b-bec7-410787c7d8b3"
     },
     "_id": ""
   },

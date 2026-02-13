@@ -84,7 +84,7 @@ export default class GameView extends BaseView {
     {
       lv = Global.lv;
     }
-    this.lvLabel.string = `<b><color=#608bc1><outline color=#000000 width=2>level </outline></c><color=#FAFAFA><outline color=#000000 width=2>${lv}</outline></c></b>`; 
+    this.lvLabel.string = "第" + lv + "关";
   }
 
   addTool(){
@@ -129,21 +129,21 @@ export default class GameView extends BaseView {
   onceAdd = false
   public onAddBunchClick(e: cc.Event.EventTouch) {
     if (this.onceAdd) {
-      cc.director.emit(events.Toast, `Only add one bunch per level`)
+      cc.director.emit(events.Toast, `每局只能加一次串！`)
       return
     }
 
-   if (Global.getToolSetting("bunch") > 0) {
-      Global.addToolSetting("bunch", -1);
+   //if (Global.getToolSetting("bunch") > 0) {
+   //   Global.addToolSetting("bunch", -1);
       this.onceAdd = true
       cc.director.emit(events.AddBunch);
-    } else {
+    //} else {
    //   console.log(e.target);
    //   SdkMgr.showRewardAD(() => {
    //     this.onceAdd = true
    //     cc.director.emit(events.AddBunch);
    //   });
-    }
+    //}
     this.setProps(Global._toolSetting);
   }
 
@@ -174,6 +174,10 @@ export default class GameView extends BaseView {
     this.node.destroy();
     cc.director.emit(events.BackToMain);
     console.log("  emit  BackMain Event. ");
+  }
+
+  public onBGClick(){
+    this.setGuideStateHide();
   }
 
   //#endregion
@@ -263,5 +267,11 @@ export default class GameView extends BaseView {
         }
       }
     }
+  }
+
+  setGuideStateHide(){
+    this.backMgr.hideGuideState();
+    this.bunchMgr.hideGuideState();
+    this.finishMgr.hideGuideState();
   }
 }

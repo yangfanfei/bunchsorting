@@ -137,7 +137,6 @@ export default class ResMgr {
                   this._frameMap[asset.name] = asset;
               }
               break;
-
             case Assets.Json:
               for (let i = 0; i < assets.length; i++) {
                 asset = assets[i];

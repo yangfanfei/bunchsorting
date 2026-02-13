@@ -274,7 +274,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 168.38,
+      "width": 176.09,
       "height": 60.48
     },
     "_anchorPoint": {
@@ -331,10 +331,8 @@
     "_fontSize": 48,
     "_lineHeight": 48,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
-    },
-    "_isSystemFontUsed": false,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -588,8 +586,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -4,
-        415.666,
+        0,
+        410,
         0,
         0,
         0,
@@ -1083,7 +1081,7 @@
       "ctor": "Float64Array",
       "array": [
         298.5,
-        -290.834,
+        -140.913,
         0,
         0,
         0,
@@ -1240,7 +1238,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 33
@@ -2034,7 +2032,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 91.25,
+      "width": 88.98,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2091,10 +2089,8 @@
     "_fontSize": 40,
     "_lineHeight": 40,
     "_enableWrapText": true,
-    "_N$file": {
-      "__uuid__": "d51c2a65-f31b-42e6-b377-f3bb955a9611"
-    },
-    "_isSystemFontUsed": false,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,

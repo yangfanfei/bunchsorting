@@ -54,11 +54,25 @@ export default class SignView extends BaseView {
   resetSpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
+  resetGetedSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
   backSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  backGetedSpr:cc.SpriteFrame = null;
 
   @property(cc.SpriteFrame)
   bunchSpr:cc.SpriteFrame = null;
 
+  @property(cc.SpriteFrame)
+  bunchGetedSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  finishSpr:cc.SpriteFrame = null;
+
+  @property(cc.SpriteFrame)
+  finishGetedSpr:cc.SpriteFrame = null;
 
   async start() {
     // setTimeout(async () => {
@@ -197,15 +211,47 @@ export default class SignView extends BaseView {
       }
       else if(item.key == "back")
       {
-        spr = this.backSpr;
+        if(item.isSign == true)
+        {
+          spr = this.backGetedSpr;
+        }
+        else
+        {
+          spr = this.backSpr;
+        }
       }
       else if(item.key == "reset")
       {
-        spr = this.resetSpr;
+        if(item.isSign == true)
+        {
+          spr = this.resetGetedSpr;
+        }
+        else
+        {
+          spr = this.resetSpr;
+        }
       }
       else if(item.key == "bunch")
       {
-        spr = this.bunchSpr;
+        if(item.isSign == true)
+        {
+          spr = this.bunchGetedSpr;
+        }
+        else
+        {
+          spr = this.backSpr;
+        }
+      }
+      else if(item.key == "finish")
+      {
+        if(item.isSign == true)
+        {
+          spr = this.finishGetedSpr;
+        }
+        else
+        {
+          spr = this.finishSpr;
+        }
       }
       signItem.updateSignState(this.signTypes.length >= 7, spr);
       signItem.updateTodayState(this.signTypes.length == 6);
@@ -258,16 +304,49 @@ export default class SignView extends BaseView {
     }
     else if(item.key == "back")
     {
-      spr = this.backSpr;
+      if(item.isSign == true)
+      {
+        spr = this.backGetedSpr;
+      }
+      else
+      {
+        spr = this.backSpr;
+      }
     }
     else if(item.key == "reset")
     {
-      spr = this.resetSpr;
+      if(item.isSign == true)
+      {
+        spr = this.resetGetedSpr;
+      }
+      else
+      {
+        spr = this.resetSpr;
+      }
     }
     else if(item.key == "bunch")
     {
-      spr = this.bunchSpr;
+      if(item.isSign == true)
+      {
+        spr = this.bunchGetedSpr;
+      }
+      else
+      {
+         spr = this.bunchSpr;
+      }
     }
+    else if(item.key == "finish")
+    {
+      if(item.isSign == true)
+      {
+        spr = this.finishGetedSpr
+      }
+      else
+      {
+        spr = this.finishSpr
+      }
+    }
+
     signItem.updateSignState(item.isSign, spr);
     //console.log(" AddSignItem:::  Item:::::::::",item," week:::: ",week);
     signItem.updateTodayState(todaySignState && item.isSign == false);
@@ -296,9 +375,9 @@ export default class SignView extends BaseView {
       this.hideBtn();
     }
 
-    Global.clearSignArr();
-    Global.saveSignFirst(false);
-    Global.clearSignData();
+    //Global.clearSignArr();
+    //Global.saveSignFirst(false);
+    //Global.clearSignData();
     //super.showVideo(handle.bind(this));
 
     // TODO:视频 item.access === AccessType.Share
@@ -336,15 +415,18 @@ export default class SignView extends BaseView {
       }else if(item.key == "reset") {
         Global.addToolSetting("reset", 1);
         spr = this.resetSpr;
-        sprGet = this.resetSpr;
+        sprGet = this.resetGetedSpr;
       }else if(item.key == "back"){
         spr = this.backSpr;
-        sprGet = this.backSpr
+        sprGet = this.backGetedSpr
         Global.addToolSetting("back", 1);
       }else if(item.key == "bunch"){
         spr = this.bunchSpr;
-        sprGet = this.bunchSpr
+        sprGet = this.bunchGetedSpr
         Global.addToolSetting("bunch", 1);
+      }else if(item.key == "finish"){
+        spr = this.finishSpr;
+        sprGet = this.finishGetedSpr;
       }
       // Global.addPropsSetting(item.key, +item.num);
 

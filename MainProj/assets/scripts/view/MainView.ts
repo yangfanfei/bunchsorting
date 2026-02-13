@@ -70,7 +70,8 @@ export default class MainView extends BaseView {
     }
   
     async onTurnTableClick(){
-
+        //const view = await ResMgr.ins.getUI(ui.RoundView);
+        //view.parent = this.node.parent;
     }
 
     async onSignClick(){

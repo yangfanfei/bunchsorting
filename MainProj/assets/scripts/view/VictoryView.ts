@@ -7,8 +7,8 @@ import BaseView from "./BaseView";
 import { Global } from "../Global";
 import { events } from "../enum/Enums";
 import { randomNum } from "../base/Math";
-import CoinMgr from "../manager/CoinMgr";
 import { SdkMgr } from "../sdk/SdkMgr";
+import GameView from "./GameView";
 
 const { ccclass, property } = cc._decorator;
 
@@ -105,20 +105,54 @@ export default class VictoryView extends BaseView {
     }
 
     Global.addCoin(this.coinReward);
-    CoinMgr.ins.setCoinLabel();
+    cc.director.emit(events.CoinChange);
+
     this.loadNextLvel();
   }
 
   onMoreAwardClick(){
-    SdkMgr.showRewardAD(() => {
-          this.coinReward = Global.rewardCoin*5;
-          this.curAwardLabel.string = "+" + this.coinReward.toString();
-          Global.addCoin(Global.rewardCoin*5);
-          CoinMgr.ins.setCoinLabel();
+    console.log("  OnMoreAwardClick.................. ");
+    if(this.bunchReward > 0)
+    {
+      Global.addToolSetting("bunch", 1);
+      cc.director.emit(events.ToolItemChange);
+    }
+    if(this.backReward > 0)
+    {
+      Global.addToolSetting("back", 1);
+      cc.director.emit(events.ToolItemChange);
+    }
+    if(this.finishReward > 0)
+    {
+      Global.addToolSetting("finish", 1);
+      cc.director.emit(events.ToolItemChange);
+    }
+
+    let view = this;
+
+    SdkMgr.showRewardAD((retValue) => {
+          console.log(" onMoreAwardClick.... retValue: ",retValue);
+          if(retValue == 1)
+          {
+            this.coinReward = Global.rewardCoin*5;
+            Global.addCoin(Global.rewardCoin*5);
+            console.log(" 1111111111. CurrentCoin: ",Global.currentCoin);
+            cc.director.emit(events.CoinChange);
+          }
+          else
+          {
+            this.coinReward = Global.rewardCoin;
+            Global.addCoin(Global.rewardCoin);
+            console.log(" 000000000. CurrentCoin: ",Global.currentCoin);
+            cc.director.emit(events.CoinChange);
+          }
+
+          view.loadNextLvel();
       })
   }
 
   loadNextLvel(){
+    console.log(" Load NextLevel................... ");
     super.close();
     this.node.destroy();
     cc.director.emit(events.Start);

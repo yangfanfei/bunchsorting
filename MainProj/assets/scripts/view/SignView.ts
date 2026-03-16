@@ -12,6 +12,8 @@ import BaseView from "./BaseView";
 import GetItemView from "./GetItemView";
 import SignItemView from "./SignItemView";
 import { SoundMgr } from "../manager/SoundMgr";
+import { SdkMgr } from "../sdk/SdkMgr";
+import { FuncUtil } from "../base/FuncUtil";
 
 const { ccclass, property } = cc._decorator;
 
@@ -44,36 +46,6 @@ export default class SignView extends BaseView {
   @property(cc.Node)
   btnGrousp: cc.Node = null;
 
-  @property(cc.SpriteFrame)
-  coinSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  coinGetedSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  resetSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  resetGetedSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  backSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  backGetedSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  bunchSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  bunchGetedSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  finishSpr:cc.SpriteFrame = null;
-
-  @property(cc.SpriteFrame)
-  finishGetedSpr:cc.SpriteFrame = null;
-
   async start() {
     // setTimeout(async () => {
     let json = ResMgr.ins.getJson("sign");
@@ -88,8 +60,8 @@ export default class SignView extends BaseView {
     {
       await this.init(json.json.first);
     }
-    //await this.init(json.json.first);
-    // }, 3000);
+
+    SdkMgr.showSignCustomAd()
   }
   private todayItem: ISignItem = null;
   private allList: ISignItem[] = [];
@@ -100,7 +72,6 @@ export default class SignView extends BaseView {
    */
   addSignType(type: SignInType) {
     //console.log(" SignView.AddSignType::: ",type);
-    //Global.addSignArr(type);
     if (!this.signTypes.includes(type)) {
       this.signTypes.push(type);
     }
@@ -111,16 +82,11 @@ export default class SignView extends BaseView {
    */
   init(arr: signInInfo[]) {
     let  SignData = Global.loadSignData()
-    console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData);
+    //console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData);
     let signArr = Global.signArr;
-    //if(signArr.length > 7){
-    //  Global.saveSignFirst(true);
-    //  Global.clearSignArr()
-    //  console.log(" Clear.Data.......... ");
-    //}
     //let week = getWeek();
     let week = signArr.length;
-    if(getDate() != Global.loadSignData())
+    if(getDate() != SignData)
     {
       week = signArr.length+1;
     }
@@ -133,6 +99,8 @@ export default class SignView extends BaseView {
     //if (!today || (week < getWeek(today))) {
     //  Global.clearSignArr();
     //}
+    console.log("SignView. Init Info:::::  ",arr," currentData: ",getDate()," SignData: ",SignData," Week::: ",week);
+    console.log("SignView. Global.signArr:::::::: ",Global.signArr);
     arr = arr.map((item) => {
       let isSign = Global.signArr.includes(item.type.toString());
       if (isSign) {
@@ -150,26 +118,21 @@ export default class SignView extends BaseView {
     for (const item of arr) {
       this.addSignItem(item, week);
     }
-    this.addFullWeek(fillList);
+    this.addFullWeek(fillList, week);
 
-    //if(SignData == getDate())
-    //{
-    //  this.hideBtn()
-    //}
-    
-    /*if (!this.todayItem) {
-      this.hideBtn();
-    }
-    else if(this.todayItem){
-      var  todayInfo = this.todayItem.info
+    if(this.todayItem)
+    {
+      let todayInfo = this.todayItem.info;
       if(todayInfo[0].isSign == true)
       {
         this.hideBtn();
       }
-    }*/
+      console.log("  todayInfo::::::::::  ",todayInfo);
+    }
+    
   }
   //   添加满七天的节点
-  addFullWeek(fillList: signInInfo[]) {
+  addFullWeek(fillList: signInInfo[], week) {
     let full = cc.instantiate(this.fullPre);
     full.parent = this.content;
     let signItem = full.getComponent(SignItemView);
@@ -182,7 +145,7 @@ export default class SignView extends BaseView {
     for (let i = 0; i < fillList.length; i++) {
       let item = fillList[i];
       let todaySignState = false;
-      if(+item.type == 7)
+      if(+item.type == week)
       {
           if(getDate() == Global.loadSignData())
           {
@@ -197,64 +160,11 @@ export default class SignView extends BaseView {
       {
         todaySignState = false;
       }
-      let spr:cc.SpriteFrame = this.coinSpr;
-      if(item.key == "coin")
-      {
-        if(item.isSign == true)
-        {
-          spr = this.coinGetedSpr
-        }
-        else
-        {
-          spr = this.coinSpr;
-        }
-      }
-      else if(item.key == "back")
-      {
-        if(item.isSign == true)
-        {
-          spr = this.backGetedSpr;
-        }
-        else
-        {
-          spr = this.backSpr;
-        }
-      }
-      else if(item.key == "reset")
-      {
-        if(item.isSign == true)
-        {
-          spr = this.resetGetedSpr;
-        }
-        else
-        {
-          spr = this.resetSpr;
-        }
-      }
-      else if(item.key == "bunch")
-      {
-        if(item.isSign == true)
-        {
-          spr = this.bunchGetedSpr;
-        }
-        else
-        {
-          spr = this.backSpr;
-        }
-      }
-      else if(item.key == "finish")
-      {
-        if(item.isSign == true)
-        {
-          spr = this.finishGetedSpr;
-        }
-        else
-        {
-          spr = this.finishSpr;
-        }
-      }
-      signItem.updateSignState(this.signTypes.length >= 7, spr);
-      signItem.updateTodayState(this.signTypes.length == 6);
+
+      let spr:cc.SpriteFrame =  FuncUtil.getSprFrameByItemType(item.key);
+      let scale = this.getScaleByItemType(item.key);
+      signItem.updateSignState(this.signTypes.length >= 7, spr, scale);
+      signItem.updateTodayState(todaySignState);
       signItem.setItemCount(item.num);
       signItem.setDayLabel(+item.type);
         if (todaySignState && globalArr.length >= 6) {
@@ -266,6 +176,19 @@ export default class SignView extends BaseView {
       }
     }
   }
+
+  private getScaleByItemType(itemType:string)
+  {
+    let  scale = 0.65;
+    if(itemType == "coin" || itemType == "luckyKey")
+    {
+      scale = 1;
+    }
+
+    return scale;
+
+  }
+
   /**
    *  添加普通节点
    * @param item  签到信息
@@ -290,69 +213,14 @@ export default class SignView extends BaseView {
     }
     //let todaySignState = (getDate() != Global.loadSignData())
     signItem.setDayLabel(+item.type);
-    let spr:cc.SpriteFrame = this.coinSpr;
-    if(item.key == "coin")
-    {
-      if(item.isSign == true)
-      {
-        spr = this.coinGetedSpr
-      }
-      else
-      {
-        spr = this.coinSpr;
-      }
-    }
-    else if(item.key == "back")
-    {
-      if(item.isSign == true)
-      {
-        spr = this.backGetedSpr;
-      }
-      else
-      {
-        spr = this.backSpr;
-      }
-    }
-    else if(item.key == "reset")
-    {
-      if(item.isSign == true)
-      {
-        spr = this.resetGetedSpr;
-      }
-      else
-      {
-        spr = this.resetSpr;
-      }
-    }
-    else if(item.key == "bunch")
-    {
-      if(item.isSign == true)
-      {
-        spr = this.bunchGetedSpr;
-      }
-      else
-      {
-         spr = this.bunchSpr;
-      }
-    }
-    else if(item.key == "finish")
-    {
-      if(item.isSign == true)
-      {
-        spr = this.finishGetedSpr
-      }
-      else
-      {
-        spr = this.finishSpr
-      }
-    }
-
-    signItem.updateSignState(item.isSign, spr);
-    //console.log(" AddSignItem:::  Item:::::::::",item," week:::: ",week);
+    let spr:cc.SpriteFrame = FuncUtil.getSprFrameByItemType(item.key);
+    let scale = this.getScaleByItemType(item.key);
+    signItem.updateSignState(item.isSign, spr, scale);
+    console.log(" AddSignItem:::  Item:::::::::",item," week:::: ",week);
     signItem.updateTodayState(todaySignState && item.isSign == false);
     signItem.setItemCount(item.num);
     if (todaySignState) {
-      //console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
+      console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
       this.todayItem = {
         info: [item],
         signScript: signItem,
@@ -367,27 +235,25 @@ export default class SignView extends BaseView {
     //this.checkIsFullWeek();
     this.hideBtn();
   }
+
   // 领双份按钮事件
   onGetDoubleBtnClick() {
-    function handle() {
-      this.getReward(this.todayItem.info, this.todayItem.signScript, true);
-      //this.checkIsFullWeek(true);
-      this.hideBtn();
-    }
-
-    //Global.clearSignArr();
-    //Global.saveSignFirst(false);
-    //Global.clearSignData();
-    //super.showVideo(handle.bind(this));
-
-    // TODO:视频 item.access === AccessType.Share
-    // if (this.todayItem) {
-    //   if (this.todayItem.info[0].access === AccessType.Share) {
-    //     super.share(handle.bind(this));
-    //   } else {
-    //     super.showVideo(handle.bind(this));
-    //   }
-    // }
+    console.log("  onGetDoubleBtnClick .............. ");
+    SdkMgr.showSignRewardAD((retValue) => {
+          console.log(" onGetDoubleBtnClick.... retValue: ",retValue);
+          if(retValue == 1)
+          {
+            this.getReward(this.todayItem.info, this.todayItem.signScript, true);
+            //this.checkIsFullWeek(true);
+            this.hideBtn();
+          }
+          else
+          {
+            this.getReward(this.todayItem.info, this.todayItem.signScript, false);
+            //this.checkIsFullWeek(true);
+            this.hideBtn();
+          }
+      })
   }
   /**
    *  领取奖励方法
@@ -407,51 +273,26 @@ export default class SignView extends BaseView {
     let infos = items.map((item) => {
       let id = item.id;
       item.num *= isDouble ? 2 : 1;
-      // Global.signArr.push(id.toString());
-      let spr = this.coinSpr;
-      let sprGet = this.coinGetedSpr;
-      if (item.key === 'coin') {
-        Global.addCoin(item.num);
-      }else if(item.key == "reset") {
-        Global.addToolSetting("reset", 1);
-        spr = this.resetSpr;
-        sprGet = this.resetGetedSpr;
-      }else if(item.key == "back"){
-        spr = this.backSpr;
-        sprGet = this.backGetedSpr
-        Global.addToolSetting("back", 1);
-      }else if(item.key == "bunch"){
-        spr = this.bunchSpr;
-        sprGet = this.bunchGetedSpr
-        Global.addToolSetting("bunch", 1);
-      }else if(item.key == "finish"){
-        spr = this.finishSpr;
-        sprGet = this.finishGetedSpr;
-      }
-      // Global.addPropsSetting(item.key, +item.num);
+      let sprGet = FuncUtil.getSprFrameByItemType(item.key);
 
-      //propsView.parent = this.node;
-
-      this.showGetItemView(spr,item.num);
-
+      this.showGetItemView(item.key,item.num);
       this.addSignType(item.type);
-      Global.addSignArr(item.type);
 
+      Global.addSignArr(item.type);
       Global.saveSignData(getDate());
 
       if(item.id == 7)
       {
         Global.saveSignFirst(true);
         Global.clearSignArr()
-        console.log(" Clear.Data.......... ");
       }
       //#region
-      signItemScript.updateSignState(true,sprGet);
+      let scale = this.getScaleByItemType(item.key);
+      signItemScript.updateSignState(true,sprGet,scale);
       signItemScript.updateTodayState(false);
       //#endregion
       return {
         id: id,
-        label: item.label,
         key: item.key,
         num: item.num,
       };
@@ -483,16 +324,17 @@ export default class SignView extends BaseView {
     }
   }
 
-  async showGetItemView(itemSpr:cc.SpriteFrame, count:number){
+  async showGetItemView(itemType:string, count:number){
       SoundMgr.ins.playSound(Clips.modal, 0.5);
 
       const GetItemViewUI = await ResMgr.ins.getUI(
         ui.GetItemView
       );
       const itemViewScrpit = GetItemViewUI.getComponent(GetItemView);
-
+      console.log(" SignShowGetItemView ::::::  itemType: ",itemType," Count: ",count);
+      itemViewScrpit.setItemType(itemType);
       itemViewScrpit.setItemCount(count);
-      itemViewScrpit.setPropImg(itemSpr);
+      itemViewScrpit.sendReward();
       GetItemViewUI.parent = this.node;
   }
 
@@ -504,6 +346,7 @@ export default class SignView extends BaseView {
     this.btnGrousp.active = false;
   }
   close(): void {
+    SdkMgr.hideSignCustomAd();
     this.node.destroy();
   }
   // update (dt) {}

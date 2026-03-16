@@ -4,8 +4,9 @@
  */
 
 import { Global } from "../Global";
-import { ui } from "../enum/Enums";
+import { Clips, ui } from "../enum/Enums";
 import ResMgr from "../manager/ResMgr";
+import { SoundMgr } from "../manager/SoundMgr";
 
 const { ccclass, property } = cc._decorator;
 
@@ -24,9 +25,9 @@ export default class LoadCtrl extends cc.Component {
     view.parent = this.node.parent;
     this.isload = false;
     this.loadingNode.active = false;
-
     this.node.destroy();
   }
+
   once = false
   update(deltaTime: number) {
     if (!this.isload) return;

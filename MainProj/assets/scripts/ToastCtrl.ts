@@ -10,7 +10,6 @@ const { ccclass, property } = cc._decorator;
 @ccclass
 export default class ToastCtrl extends cc.Component {
 
-
     @property(cc.Label)
     text: cc.Label = null;
 

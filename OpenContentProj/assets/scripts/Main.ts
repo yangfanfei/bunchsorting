@@ -27,12 +27,19 @@ export default class NewClass extends cc.Component {
     @property(Rank)
     private rank: Rank = null;
 
+    private wx = window["wx"]
+
     protected onLoad() {
-        this.updateRankList([],LinkType.Default,"");
-        if (cc.sys.platform !== cc.sys.WECHAT_GAME_SUB) return;
-        // 监听来自主域的消息
-        //this.updateRankList([],LinkType.Default,"");
-        wx.onMessage((msg: any) => this.onMessage(msg));
+        //console.log(" OpenData.Main......  OnLoad:::::::::: Platform:: ",cc.sys.platform);
+        //if(cc.sys.platform == cc.sys.WECHAT_GAME_SUB)
+        {
+            this.updateRankList([],"");
+            if (cc.sys.platform !== cc.sys.WECHAT_GAME_SUB) return;
+            // 监听来自主域的消息
+            //this.updateRankList([],LinkType.Default,"");
+            console.log(" OpenData.Main......  OnLoad:::::::::: 2222222222222");
+            this.wx.onMessage((msg: any) => this.onMessage(msg));
+        }
     }
     openid: string = '';
 
@@ -41,34 +48,33 @@ export default class NewClass extends cc.Component {
      * @param msg 消息
      */
     private onMessage(msg: any) {
-        console.log('RankMain.msgmsgmsg.Data::: ',msg);
-        msg.type = LinkType.Challenge
+        console.log('OpenData.RankMain.msgmsgmsg.Data::: ',msg);
         this.openid = msg.openid;
 
         switch (msg.event) {
-            case 'setScore':
-                this.setScore(msg.score, msg.type);
+            case 'setLevel':
+                this.setLevel(msg.level);
                 break;
             case 'getRank':
-                this.getRank(msg.type, msg.openid);
+                this.getRank(msg.openid);
                 break;
         }
     }
 
     /**
-     * 获取玩家分数
+     * 获取关卡
      */
-    private getScore(): Promise<number> {
+    private getLevel(): Promise<number> {
         return new Promise(resolve => {
-            console.log('[getScore]');
-            wx.getUserCloudStorage({
-                keyList: ['score'],
+            console.log('[getLevel]');
+            this.wx.getUserCloudStorage({
+                keyList: ['level'],
                 success: (res: UserGameData) => {
-                    console.log('[getScore]', 'success', res);
+                    console.log('[getLevel]', 'success', res);
                     resolve(res.KVDataList[0] ? parseInt(res.KVDataList[0].value) : 0);
                 },
                 fail: (err) => {
-                    console.log('[getScore]', 'fail', err);
+                    console.log('[getLevel]', 'fail', err);
                     resolve(-1);
                 }
             });
@@ -76,46 +82,120 @@ export default class NewClass extends cc.Component {
     }
 
     /**
-     * 设置玩家分数
+     * 设置玩家关卡
      * @param value 分数
      */
-    private async setScore(value: number, type: LinkType) {
+    private setLevel(value: number) {
         // const typeLabel = type === LinkType.Default ? 'default' : 'challenge';
-        console.log('[setScore]', value,);
-        let oldScore = await this.getScore();
-        if (oldScore === -1) return;
-        if (value > oldScore) {
+        console.log('[OpenData.SetLevel]', value,);
+        this.wx.getUserCloudStorage({
+            keyList: ['level'],
+            success: (res: UserGameData) => {
+                    console.log('[getOldLevel]', 'success', res);
+                    console.log(res.KVDataList[0] ? parseInt(res.KVDataList[0].value) : 0);
+                    let oldValue = res.KVDataList[0] ? parseInt(res.KVDataList[0].value) : 0;
+                    if(oldValue < value)
+                    {
+                        this.setLevelReaL(value);
+                    }
+                    else
+                    {
+                        console.log(" 设置玩家关卡等级的时候，存储等级大于当前等级： ",value," 存储等级: ",oldValue);
+                    }
+                },
+                fail: (err) => {
+                    console.log('[getOldLevel]', 'fail', err);
+                    this.setLevelReaL(value);
+                }
+            });
+        /*let oldLevel = await this.getLevel();
+        if (oldLevel === -1) return;
+        if (value > oldLevel) {
             // wx.removeUserCloudStorage({ keyList: ['score'] })
             // const obj = {
             //     typeLabel,
             //     maxVal: value.toString()
             // }
-            wx.setUserCloudStorage({
+            //this.info("  OpenDataContext [setLevel] ::::::::::::::: ",value);
+            this.wx.setUserCloudStorage({
                 KVDataList: [{
-                    key: 'score',
+                    key: 'level',
                     value: value.toString(),
                 },],
                 success: () => {
-                    console.log('[setScore]', 'success');
+                    console.log('[setLevel]', 'success');
                 },
                 fail: (err) => {
-                    console.log('[setScore]', 'fail', err);
+                    console.log('[setLevel]', 'fail', err);
                 }
             });
         }
+        else
+        {
+            console.log(" OpenContent OldLevel 大于 NewLevel");
+        }*/
+    }
+
+    private setLevelReaL(value:number){
+        console.log('[setLevelReaL.setLevel]', 'Value::: ',value);
+        this.wx.setUserCloudStorage({
+            KVDataList: [{
+                key: 'level',
+                value: value.toString(),
+            },],
+            success: () => {
+                console.log('[setLevelReaL.setLevel]', 'success');
+            },
+            fail: (err) => {
+                console.log('[setLevelReaL.setLevel]', 'fail', err);
+            }
+        });
+    }
+
+    /**
+     * 设置玩家关卡
+     * @param value 分数
+     */
+    private setCoin(value:number){
+        this.wx.setUserCloudStorage({
+            KVDataList: [{
+                key: 'coin',
+                value: value.toString(),
+            },],
+            success: () => {
+                console.log('[setCoin]', 'success');
+            },
+            fail: (err) => {
+                console.log('[setCoin]', 'fail', err);
+            }
+        });
+    }
+
+    private getCoin()
+    {
+        console.log(" ");
+        this.wx.getUserCloudStorage({
+            keyList: ['coin'],
+            success: (res: UserGameData) => {
+                console.log('[getCoin]', 'success', res);
+            },
+            fail: (err) => {
+                console.log('[getCoin]', 'fail', err);
+            }
+        });
     }
 
     /**
      * 获取排行榜
      */
-    private async getRank(type: LinkType, openid: string) {
+    private getRank(openid: string) {
         console.log('[getRank]');
         // 显示加载动画
-        this.showLoading();
+        //this.showLLoading();
         // 调用微信的函数
-        await new Promise<void>(resolve => {
-            wx.getFriendCloudStorage({
-                keyList: ['score'],
+        //await new Promise<void>(resolve => {
+            this.wx.getFriendCloudStorage({
+                keyList: ['level'],
                 success: (res: any) => {
                     console.log('[getRank]', 'success', res);
                     // const typeLabel = type === LinkType.Default ? 'default' : 'challenge';
@@ -130,28 +210,34 @@ export default class NewClass extends cc.Component {
                         return parseInt(b.KVDataList[0].value) - parseInt(a.KVDataList[0].value);
                     });
                     // 排序之后进行展示
-                    this.updateRankList(res.data, type, openid);
-                    resolve();
+                    this.updateRankList(res.data, openid);
+                    //this.hideLoading();
+                    //resolve();
                 },
                 fail: (res: any) => {
                     console.log('[getRank]', 'fail');
-                    resolve();
+                    //this.hideLoading();
+                    //resolve();
                 }
             });
-        });
+        //});
         // 关闭加载动画
-        this.hideLoading();
+        //this.hideLoading();
     }
 
     /**
      * 更新好友排行
      * @param data 数据
      */
-    private updateRankList(data: UserGameData[], type: LinkType, openid: string) {
+    private updateRankList(data: UserGameData[], openid: string) {
+        console.log(" OpenDataContext.......  UpdateRankList::::  ",data);
+        //this.info(" OpenDataContext ::::::::::::::: ");
         const arr: LinkItemData[] = []
         // const typeLabel = type === LinkType.Default ? 'default' : 'challenge';
         for (let [index, item] of data.entries()) {
             // if (item.KVDataList[0].typeLabel === typeLabel) {
+            console.log(" UpdateRankList.Index::::::: ",index," Item.Data:::: ",item);
+            //this.info(" UpdateRankList.Index::::::: ",index," Item.Data:::: ",item);
             arr.push({
                 name: item.nickname,
                 num: index + 1,
@@ -162,21 +248,8 @@ export default class NewClass extends cc.Component {
             // }
         }
 
-        //// testData......
-        /*for(let i = 0; i < 10; ++i)
-        {
-            arr.push({
-                name: "测试"+ i,
-                num: i + 1,
-                maxLv: i*5 + "",
-                img: "",
-                openid: "1111"+i,
-            })
-        }*/
-
-
         // 更新排行榜
-        this.rank.refresh(type, arr, this.openid || openid);
+        this.rank.refresh(arr, this.openid || openid);
         console.log('[updateRankList]', data, arr);
         // rank
     }
@@ -184,19 +257,19 @@ export default class NewClass extends cc.Component {
     /**
      * 显示加载动画
      */
-    private showLoading() {
-        console.log(wx.showLoading, 'wxwxwx');
-        // this.loading.active = true;
-        // wx.showLoading({
-        //     title: '加载中',
-        // })
+    private showLLoading() {
+        //console.log(wx.showLoading, 'wxwxwx');
+        this.loading.active = true;
+        /*this.wx.showLoading({
+             title: '加载中',
+        })*/
     }
 
     /**
      * 关闭加载动画
      */
     private hideLoading() {
-        // this.loading.active = false;
-        // wx.hideLoading();
+        this.loading.active = false;
+        this.wx.hideLoading();
     }
 }

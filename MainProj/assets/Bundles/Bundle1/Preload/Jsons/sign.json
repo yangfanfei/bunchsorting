@@ -3,115 +3,101 @@
         {
             "id":"1",
             "access":"0",
-            "num":"2",
+            "num":"1",
             "key":"finish",
-            "label":"立即完成",
             "type":"1"
         },
         {
             "id":"2",
             "access":"0",
-            "num":"2",
-            "key":"bunch",
-            "label":"新增",
+            "num":"1",
+            "key":"luckyKey",
             "type":"2"
         },
         {
             "id":"3",
             "access":"0",
             "num":"1",
-            "key":"back",
-            "label":"回退",
+            "key":"bunch",
             "type":"3"
         },
         {
             "id":"4",
             "access":"0",
-            "num":"2",
-            "key":"finish",
-            "label":"立即完成",
+            "num":"1",
+            "key":"luckyKey",
             "type":"4"
         },
         {
             "id":"5",
             "access":"0",
-            "num":"2",
-            "key":"bunch",
-            "label":"新增",
+            "num":"1",
+            "key":"back",
             "type":"5"
         },
         {
             "id":"6",
             "access":"0",
             "num":"1",
-            "key":"back",
-            "label":"回退",
+            "key":"bunch",
             "type":"6"
         },
         {
             "id":"7",
             "access":"0",
-            "num":"3",
-            "key":"back",
-            "label":"回退",
+            "num":"2",
+            "key":"luckyKey",
             "type":"7"
         }
     ],
     "loop":[
-         {
+        {
             "id":"1",
             "access":"0",
-            "num":"2",
+            "num":"1",
             "key":"finish",
-            "label":"立即完成",
             "type":"1"
         },
         {
             "id":"2",
             "access":"0",
-            "num":"2",
-            "key":"bunch",
-            "label":"新增",
+            "num":"1",
+            "key":"luckyKey",
             "type":"2"
         },
         {
             "id":"3",
             "access":"0",
             "num":"1",
-            "key":"back",
-            "label":"回退",
+            "key":"bunch",
             "type":"3"
         },
         {
             "id":"4",
             "access":"0",
-            "num":"2",
-            "key":"finish",
-            "label":"立即完成",
+            "num":"1",
+            "key":"luckyKey",
             "type":"4"
         },
         {
             "id":"5",
             "access":"0",
-            "num":"2",
-            "key":"bunch",
-            "label":"新增",
+            "num":"1",
+            "key":"back",
             "type":"5"
         },
         {
             "id":"6",
             "access":"0",
             "num":"1",
-            "key":"back",
-            "label":"回退",
+            "key":"bunch",
             "type":"6"
         },
         {
             "id":"7",
             "access":"0",
-            "num":"3",
-            "key":"back",
-            "label":"回退",
+            "num":"2",
+            "key":"luckyKey",
             "type":"7"
         }
     ]

@@ -7,6 +7,7 @@ import { prop } from "../enum/Enums";
 import { AccessType, signInInfo } from "../base/Interface";
 import PropBlockMgr from "../manager/PropBlockMgr";
 import ResMgr from "../manager/ResMgr";
+import { FuncUtil } from "../base/FuncUtil";
 
 const { ccclass, property } = cc._decorator;
 
@@ -54,7 +55,7 @@ export default class SignItemView extends cc.Component {
   }
 
   //   更新签到状态
-  updateSignState(state: boolean, iconSpr:cc.SpriteFrame) {
+  updateSignState(state: boolean, iconSpr:cc.SpriteFrame, iconScale:number) {
     this._signState = state;
     let  coinSpr  = this.coinNode.getComponent(cc.Sprite);
     if(this._signState == true)
@@ -62,12 +63,16 @@ export default class SignItemView extends cc.Component {
       this.getLabel.node.active = true;
       this.rewardLabel.node.active = false;
       coinSpr.spriteFrame = iconSpr;
+      this.coinNode.scale = iconScale;
+      FuncUtil.setSprGray(coinSpr, true);
     }
     else
     {
       this.getLabel.node.active = false;
       this.rewardLabel.node.active = true;
       coinSpr.spriteFrame = iconSpr;
+      this.coinNode.scale = iconScale;
+      FuncUtil.setSprGray(coinSpr, false);
     }
   }
   // 更新今天状态

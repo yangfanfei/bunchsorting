@@ -3,6 +3,7 @@
  * @Description: Game Enums
  */
 
+import LuckyDrawView from "../view/LuckyDrawView";
 import MainView from "../view/MainView";
 import RankListView from "../view/RankListView";
 import SignView from "../view/SignView";
@@ -63,28 +64,7 @@ export class shareVideoConfig {
   sharePics: shareVideoContent[] = [];
 }
 
-export interface WaterInfo {
-  colorId: number;
-  color: cc.Color; 
-  height: number; 
-}
-
 export const MAX_ARR_LEN = 6;
-
-export enum BASIC_DATA {
-  /** color layer */
-  color_alpha = 1.0,
-  /** color range */
-  color_range = 255,
-  /** byte */
-  BYTE = 4,
-  /** second color layer */
-  color_alpha2 = 1,
-  /** third color layer */
-  color_alpha3 = 2,
-  /** fourth color layer */
-  color_alpha4 = 3,
-}
 
 export const SPLIT_COUNT = 4;
 
@@ -100,6 +80,13 @@ export const spacesArr = {
   [5]: [90, 1], // tubecount 5，
 };
 
+export enum ItemType {
+    Reset = 1,
+    Back = 2,
+    AddBunch = 3,
+    Finish = 4,
+    Icon = 5
+}
 
 export enum SoundStatus {
   on = 1,
@@ -116,6 +103,8 @@ export const Clips = {
   pourWater: "pourWater",
   Show_Victory: "Show_Victory",
   reward: "reward",
+  back_inGame: "back_inGame",
+  back_inMain: "back_inMain",
 };
 /**
  * asset type
@@ -150,6 +139,10 @@ export const Key = {
   SignArr: 'SignArr',
   SignFirst: 'SignFirst',
   SignDate: 'SignDate',
+  LuckyDrawCount:"LuckyDrawCount",
+  LuckyDrawTime:"LuckyDrawTime",
+  LuckyShowAdTime:"LuckyShowAdTime",
+  LuckyDrawHistory:"LuckyDrawHistory"
 };
 
 /** Event List */
@@ -157,8 +150,10 @@ export const events = {
   GameStart: "GameStart",
   Toast: "Toast",
   ChangeSound: "ChangeSound",
+  ChangeMusic: "ChangeMusic",
   Reset: "Reset",
   Back: "Back",
+  Finish: "Finish",
   AddBunch: "AddBunch",
   Start: "Start",
   TimeStop: "TimeStop",
@@ -168,6 +163,7 @@ export const events = {
   LevelSelectChange: "LevelSelectChange",
   BackToMain: "BackToMain",
   ToolItemChange: "ToolItemChange",
+  CoinChange:"CoinChange"
 };
 
 /* for ui prefabs config */
@@ -178,6 +174,7 @@ export const ui = {
   GetItemView: { name: "GetItemView", layer: 3,clear: false },
   ToastView: { name: 'ToastView', layer: 6, clear: false },
   SettingView: { name: 'SettingView', layer: 6, clear: false },
+  LuckyDrawView: { name: 'LuckyDrawView', layer: 6, clear: false },
   SignView: { name: "SignView", layer: 6, clear: false },
   RankListView: { name: "RankListView", layer: 6, clear: false },
 };

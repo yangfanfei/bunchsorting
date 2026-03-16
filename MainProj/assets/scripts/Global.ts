@@ -6,6 +6,7 @@
 import { Key, SoundStatus, events } from "./enum/Enums";
 import { Action, ToolInfos } from "./base/Interface";
 import { getDate, load, save } from "./utils/Tools";
+import { LinkType, SubContent } from "./sdk/WX/SubContent";
 export class Global {
   static Debug = true;
 
@@ -44,6 +45,16 @@ export class Global {
   static rewardCoin = 10;
   /*  finish one level award coin count  */ 
   static watchAdReward = 50;
+  /*  lucky draw count */ 
+  static luckyDrawCount = 0;
+  /*  lucky draw show Ad time */ 
+  static luckyDrawAdTime = 0;
+  /*  max lucky draw count per day*/ 
+  static maxLuckyDrawTime = 0;
+  /*  上一次转盘的时间  */ 
+  static lastLuckyDrawTime = "";
+  /*  转盘的抽奖历史记录  */
+  static luckyDrawHistory = ""; 
 
   static _receiveList: string[] = []
 
@@ -55,18 +66,6 @@ export class Global {
     this._receiveList = v;
   }
 
-  static setReceiveList(value: string) {
-    Global._receiveList.push(value)
-    this.saveReceiveListLocal()
-  }
-  static saveReceiveListLocal() {
-    save(Key.ReceiveList, JSON.stringify(Global._receiveList));
-    save(Key.ReceiveListTime, getDate());
-  }
-  static clearReceiveList() {
-    Global._receiveList = []
-    this.saveReceiveListLocal()
-  }
   static _toolSetting = {
     /** reset */
     reset: 1,
@@ -76,6 +75,8 @@ export class Global {
     bunch: 1,
     /** finish */
     finish: 1,
+    /** lucky Key */
+    luckyKey: 1,
   };
 
   /** cup config */
@@ -102,20 +103,101 @@ export class Global {
     this._cupSetting = value;
   }
 
+  static setLuckyDrawCount(value:number){
+    this.luckyDrawCount = value;
+    if(this.luckyDrawCount == 1)  // 每日首次抽取后记录时间，方便次日刷新
+    {
+      save(Key.LuckyDrawTime, getDate());
+      //console.log("  保存抽奖时间::::::::  ",getDate())
+    }
+    save(Key.LuckyDrawCount, this.luckyDrawCount);
+  }
+
+  static loadLuckyDrawCount(){
+    let drawCount = load(Key.LuckyDrawCount, 1)
+    this.luckyDrawCount = drawCount;
+  }
+
+  static addLuckyDrawHistory(addIndex:number){
+    //console.log(" AddLuckyDrawHistory:::::::  Index:: ",addIndex);
+    let addBeforeArr = this.luckyDrawHistory.split(",");
+    console.log("Add HistoryBefore &&&&& LuckDrawHistory: ",this.luckyDrawHistory,"  ARR: ",addBeforeArr," Add.Index:::::: ",addIndex);
+    let currentCount = Number(addBeforeArr[addIndex]);
+    currentCount = currentCount+1;
+    addBeforeArr[addIndex] = currentCount+"";
+
+    let tSr = "";
+    for(let i = 0; i < addBeforeArr.length; ++i)
+    {
+      tSr += addBeforeArr[i];
+      if(i != addBeforeArr.length-1)
+      {
+        tSr += ","
+      }
+    }
+
+    this.luckyDrawHistory = tSr;
+    save(Key.LuckyDrawHistory, this.luckyDrawHistory);
+    console.log(" addLuckyDrawHistory.After &&&&& ",tSr);
+  }
+
+  static saveLuckyDrawHistory(){
+    save(Key.LuckyDrawHistory, this.luckyDrawHistory);
+    //console.log(" LuckyDraw History:::::::::  ", this.luckyDrawHistory);
+  }
+
+  static setReceiveList(value: string) {
+    Global._receiveList.push(value)
+    this.saveReceiveListLocal()
+  }
+
+  static clearLuckyDrawData(){
+    this.luckyDrawCount = 0;
+    this.luckyDrawAdTime = 0;
+    this.lastLuckyDrawTime = "";
+
+    save(Key.LuckyDrawCount, 0);
+    save(Key.LuckyDrawTime,"");
+    save(Key.LuckyShowAdTime, 0);
+  }
+
+  static saveReceiveListLocal() {
+    save(Key.ReceiveList, JSON.stringify(Global._receiveList));
+    save(Key.ReceiveListTime, getDate());
+  }
+
+  static clearReceiveList() {
+    Global._receiveList = []
+    this.saveReceiveListLocal()
+  }
+
   /**
    * add Tool Setting
    */
   static addToolSetting(key: ToolInfos["key"], value: number) {
     this._toolSetting[key] += +value;
     save(Key.ToolSetting, JSON.stringify(this._toolSetting));
+    //console.log("  addToolSetting:::: KEY::: ",key," Value::: ",value, " this._toolSetting:::: ",this._toolSetting)
   }
 
   /**
-   *  get Tool Setting
+   * get Tool Setting
    * @returns
    */
   static getToolSetting(key: ToolInfos["key"]) {
     return +this._toolSetting[key];
+  }
+
+  static setToolSettingToZero(key: ToolInfos["key"]){
+    this._toolSetting[key] = 0;
+    save(Key.ToolSetting, JSON.stringify(this._toolSetting));
+    console.log(" setToolSettingToZero::::::::: ",this._toolSetting);
+  }
+
+  static setToolSettingValue(key: ToolInfos["key"], value:number){
+    this._toolSetting[key] = value;
+    save(Key.ToolSetting, JSON.stringify(this._toolSetting));
+    console.log(" setToolSettingValue:::::::  ",this._toolSetting);
   }
 
   /**
@@ -129,6 +211,7 @@ export class Global {
     {
       this.currentMaxLv = this.lv;
       save(Key.CurMaxLevel, this.currentMaxLv);
+      SubContent.setMaxLevel(this.currentMaxLv);
       console.log(" Save New Max Level::::: ",this.currentMaxLv);
     }
     save(Key.Lv, this.lv);
@@ -143,6 +226,7 @@ export class Global {
     }
     save(Key.Lv, this.lv);
   }
+
   /**
    * Set Level
    * @param lv 
@@ -204,6 +288,7 @@ export class Global {
     this.signArr = arr.slice()
     console.log(" Add.SignArr:::::: ",this.signArr);
   }
+  
   /** 清空已签到的数组 */
   static clearSignArr() {
     console.log(" Clear.SignArr::::::::: ");

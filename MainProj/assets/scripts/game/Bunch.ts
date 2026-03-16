@@ -54,9 +54,6 @@ export default class Bunch extends cc.Component{
                 //console.log("IIIIIII : ",i," Color: ",color," SprFrame:: ",GameMgr.ins.bunchImgs[color-1]);
             }
         }
-
-        //this.destoryShadow();
-        this.createShadow();
     }
 
     private initSprite(){
@@ -93,29 +90,6 @@ export default class Bunch extends cc.Component{
         }
     }
 
-    createShadow() {
-        // 创建阴影节点
-        /*this.shadowNode = new cc.Node('Shadow');
-        this.shadowNode.parent = this.node.parent;
-        this.shadowNode.zIndex = this.node.zIndex - 1;
-        
-        // 复制Sprite组件
-        const sprite = this.node.getComponent(cc.Sprite);
-        const shadowSprite = this.shadowNode.addComponent(cc.Sprite);
-        
-        shadowSprite.spriteFrame = sprite.spriteFrame;
-        shadowSprite.trim = sprite.trim;
-        shadowSprite.sizeMode = sprite.sizeMode;
-
-        this.shadowNode.color = new cc.Color(0,0,0);*/
-        
-        // 设置阴影颜色
-        //this.shadowNode.color = this.shadowColor;
-        
-        // 更新位置
-        this.updateShadowPosition();
-    }
-    
     updateShadowPosition() {
         //if (!this.shadowNode) return;
         
@@ -218,7 +192,7 @@ export default class Bunch extends cc.Component{
             finishedState = true;
         }
 
-        //console.log("checkFinishImpDontChangeState. SplitCount:::: ",sameColrCount," CupIndex: ",this._cupIndex," FinishState: ",finishedState," TmpId: ",tmpId);
+        //console.log("checkFinishImpDontChangeState. SplitCount:::: ",sameColrCount," CupIndex: ",this.index," FinishState: ",finishedState," TmpId: ",tmpId);
         return finishedState; 
     }
 
@@ -244,7 +218,6 @@ export default class Bunch extends cc.Component{
             }
         }
 
-        console.log("  Current Bunch Index:: ",this.index," Top Color:: ",color)
         return false;
     }
 
@@ -279,6 +252,24 @@ export default class Bunch extends cc.Component{
         //console.log(" TmpArr::::::  ",tmpArr);
         this.info.colorIds = tmpArr;
         this.initBunchData();
+    }
+
+    public getCurrentColorId()
+    {
+        let tColors = [];
+        if(this.checkFinishImpDontChangeState() == false)
+        {
+            for(let i = 0; i < this.info.colorIds.length; ++i)
+            {
+                let colorId = this.info.colorIds[i];
+                if(colorId != 0)
+                {
+                    tColors.push(colorId)                    
+                }
+            }
+        }
+
+        return tColors;
     }
 
     public getTopEmptyCount(){

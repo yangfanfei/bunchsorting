@@ -36,9 +36,9 @@ export interface oneRewardInfo {
   /** id */
   id: number;
   /** 标签 */
-  label: "重置" | "后退" | "串" | "金币";
+  label: "重置" | "后退" | "加串" | "金币" | "完成";
   /** key */
-  key: "reset" | "back" | "bunch" | "coin";
+  key: "reset" | "back" | "bunch" | "coin" | "finish";
   /** 数量 */
   num: number;
 }
@@ -100,7 +100,7 @@ export interface ToolInfos {
   /** id */
   id: number;
   /** key */
-  key: "reset" | "back" | "bunch" | "finish" ;
+  key: "reset" | "back" | "bunch" | "finish" | "luckyKey";
   /** count */
   num: number;
 }

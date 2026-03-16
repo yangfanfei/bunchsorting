@@ -5,6 +5,9 @@
 
 import GameMgr from "../manager/GameMgr";
 import BaseView from "./BaseView";
+import { Global } from "../Global";
+import { FuncUtil } from "../base/FuncUtil";
+import { events } from "../enum/Enums";
 
 const { ccclass, property } = cc._decorator;
 
@@ -27,7 +30,8 @@ export default class GetItemView extends BaseView {
 
   private skeCompGet:sp.Skeleton = null;
   private skeCompCircle:sp.Skeleton = null;
-
+  private itemCount:number = 0;
+  private itemType:string = ""
   start() { 
     this.skeCompGet = this.getEffectNode.getComponent(sp.Skeleton);
     this.skeCompCircle = this.circleEffectNode.getComponent(sp.Skeleton);
@@ -36,6 +40,13 @@ export default class GetItemView extends BaseView {
 
   setItemCount(count:number) {
     this.labelNode.getComponent(cc.Label).string = count + "";
+    this.itemCount = count
+  }
+
+  setItemType(itemType:string){
+    this.itemType = itemType;
+    let spr = FuncUtil.getSprFrameByItemType(this.itemType);
+    this.propSprite.spriteFrame = spr
   }
 
   setPropImg(spr:cc.SpriteFrame) {
@@ -77,6 +88,26 @@ export default class GetItemView extends BaseView {
 
   private playSecondAnimation(){
       this.skeCompCircle.setAnimation(0, "default2", true);
+  }
+
+  public sendReward()
+  {
+    if (this.itemType === 'coin') {
+      Global.addCoin(this.itemCount);
+      cc.director.emit(events.CoinChange);
+    }else if(this.itemType == "reset") {
+      Global.addToolSetting("reset", this.itemCount);
+    }else if(this.itemType == "back"){
+      Global.addToolSetting("back", this.itemCount);
+    }else if(this.itemType == "bunch"){
+      Global.addToolSetting("bunch", this.itemCount);
+    }else if(this.itemType == "finish"){
+      Global.addToolSetting("finish", this.itemCount);
+    }else if(this.itemType =="luckyKey"){
+      Global.addToolSetting("luckyKey", this.itemCount);
+    }
+
+    console.log(" SendReward................ ItemType: ",this.itemType," Count:: ",this.itemCount);
   }
   
   // update (dt) {}

@@ -7,7 +7,6 @@ import { Global } from "../Global";
 import { Clips, events, spacesArr } from "../enum/Enums";
 import { SoundMgr } from "./SoundMgr";
 import GameView from "../view/GameView";
-import CoinMgr from "./CoinMgr";
 import { BunchInfo, SpacesArr } from "../base/Interface";
 import Bunch from "../game/Bunch";
 import { randomNum } from "../base/Math";
@@ -58,9 +57,11 @@ export default class GameMgr extends cc.Component {
 
   private layout_v: cc.Layout = null;
   private isPlaying:boolean = false;
+  private isInGame:boolean = false;
   private lastSelectBunch: Bunch = null;
-  private tween: cc.Tween = null;
   private currentTotalColorCount = 0;
+  private tween:cc.Tween = null;
+  private tmpColorArr:Array<Number> = [];
 
   onLoad() {
     if (CC_EDITOR) {
@@ -68,7 +69,6 @@ export default class GameMgr extends cc.Component {
     }
 
     GameMgr.ins = this;
-
     this.startGame();
   }
 
@@ -90,18 +90,18 @@ export default class GameMgr extends cc.Component {
    */
   public startGame() {
     Global.action_list = [];
-    console.log(" GameMgr.StartGame..........");
+    //console.log(" GameMgr.StartGame..........");
     this.initCfg();
     this.createBunches();
-    if(CoinMgr.ins)
-    {
-      CoinMgr.ins.setCoinLabel();
-    }
+
     if(GameView.ins)
     {
       GameView.ins.setAllFinish(false);
+      GameView.ins.setCoinLabel();
       //GameView.ins.addTool();
     }
+    this.isPlaying = true;
+    this.isInGame = true;
     /*if (Global.lv === 1) {
       console.log(" startGame........... LV:: ",Global.lv);
       setTimeout(() => {
@@ -145,17 +145,53 @@ export default class GameMgr extends cc.Component {
     }
 
     console.log(" this.curCfg.Before.ADD::: ",this.curCfg);
+    //let randomColor = randomNum(1,this.currentTotalColorCount);
+    //this.curCfg.push({ colorIds: [0, 0, 0, 0] });
+    //console.log(" this.curCfg.After.ADD::: ",this.curCfg," Random.Color: ",randomColor);
+    //this.removeOneColor(randomColor);
 
-    let randomColor = randomNum(1,this.currentTotalColorCount);
-
-    this.curCfg.push({ colorIds: [randomColor, randomColor, randomColor, randomColor] });
-
-    console.log(" this.curCfg.After.ADD::: ",this.curCfg,"  Random.Color: ",randomColor);
-    this.removeOneColor(randomColor);
-
+    this.curCfg.push({ colorIds: [0, 0, 0, 0] });
     this.createBunches();
   }
 
+  private getRandomColor()
+  {
+    this.tmpColorArr = [];
+    let tColors:Array<Number>= [];
+    for(let i = 0; i < this.curBunchs.length; ++i)
+    {
+      let bunch = this.curBunchs[i];
+      tColors = bunch.getCurrentColorId();
+      //console.log("  IIIIIIII: ",i," TColors:: ",tColors);
+      for(let k = 0;k < tColors.length; ++k)
+      {
+        let colorID = tColors[k]
+        if(this.tmpColorArr.includes(colorID) == false && colorID != 0){
+          this.tmpColorArr.push(colorID);
+        }
+      }
+    }
+
+    this.currentTotalColorCount = this.tmpColorArr.length;
+    //console.log(" AllFinihs:::::::::  ColorArr::: ",this.tmpColorArr," Color.Count::: ",this.currentTotalColorCount);
+  }
+
+  randomRemoveColor(){
+    if (!this.checkCanAddBunch()) return;
+    if (this.lastSelectBunch) {
+      this.doSelect(this.lastSelectBunch, false);
+      this.lastSelectBunch = null;
+    }
+
+    this.getRandomColor();
+    let randomNumber = randomNum(1,this.currentTotalColorCount);
+    let color = this.tmpColorArr[randomNumber-1];
+    //console.log(" 随机消除的颜色::::::::  RondomColor:: ",color," RandomNumber:::: ",randomNumber);
+    //console.log(" Before....ActionList:: ",Global.action_list);
+    Global.action_list = Global.action_list.filter(item => item.colorId !== color);
+    //console.log(" After.....ActionList:: ",Global.action_list);
+    this.removeOneColor(color);
+  }
 
   private removeOneColor(colorID:Number)
   {
@@ -163,6 +199,10 @@ export default class GameMgr extends cc.Component {
     {
       let bunch = this.curBunchs[i];
       bunch.removeOneColor(colorID);
+    }
+
+    if(this.checkAllFinish() == true){
+      cc.director.emit(events.LevelFinish);
     }
   }
 
@@ -202,7 +242,6 @@ export default class GameMgr extends cc.Component {
         let colorID = info.colorIds[i]
         if(tmpColor.includes(colorID) == false && colorID != 0){
           tmpColor.push(colorID);
-          console.log(" ColorID::::  Add  To  Array",colorID);
         }
       }
 
@@ -220,6 +259,16 @@ export default class GameMgr extends cc.Component {
 
   public checkCanUndo() {
     return  Global.action_list.length > 0;
+  }
+
+  public setInGame(val:boolean)
+  {
+    this.isInGame = val;
+  }
+
+  public getInGame()
+  {
+    return this.isInGame;
   }
 
   async createBunches() {
@@ -442,6 +491,10 @@ export default class GameMgr extends cc.Component {
     return bunchComp;
   }
 
+  public randomClearOneColor(){
+
+  }
+
   private onClickBunch(bunch: Bunch) {
     GameView.ins.setGuideStateHide();
     if (this.lastSelectBunch) {
@@ -468,6 +521,11 @@ export default class GameMgr extends cc.Component {
   }
 
   private checkMove(src: Bunch, dst: Bunch) {
+    if(src == null || dst == null)
+    {
+      console.error(" CheckMove  点击的串为空：：  SRC ",src,"  DST ",dst);
+      return;
+    }
     const { topColorId: srcColorId, topColorNum: srcColorNum } = src.getTop();
     const { topColorId: dstColorId, emptyNum: dstEmptyNum } = dst.getTop();
 
@@ -518,8 +576,6 @@ export default class GameMgr extends cc.Component {
     let desPos1 = new cc.Vec3(srcPos.x, srcPos.y+210, srcPos.z);
     let desPos2 = new cc.Vec3(desPos3.x, desPos3.y+250, desPos3.z);
 
-    //console.log(" Before.DestPos:::: ",desPos3,"  Dest.Count::: ",destTopEmptyCount);
-    //let desPos4 = new cc.Vec3(desPos3.x, desPos3.y + 160 - (destTopEmptyCount)*65, desPos3.z);
     //console.log(" After.DestPos:::: ",desPos4);
     for(var i = 0 ; i < moveCount; ++i)
     {

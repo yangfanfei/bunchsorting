@@ -1842,9 +1842,6 @@
     "coinSpr": {
       "__uuid__": "d82597f1-133a-4779-b3e2-a1cde56e8e3c"
     },
-    "coinGetedSpr": {
-      "__uuid__": "28c6c743-a35b-4be5-ae05-4ee3cf763b71"
-    },
     "resetSpr": {
       "__uuid__": "628ab069-8645-4600-871a-959bcca8d2ad"
     },

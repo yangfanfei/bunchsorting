@@ -1,5 +1,5 @@
 {
-  "title": "waterSubProject",
+  "title": "OpenDataContext",
   "packageName": "org.cocos2d.demo",
   "startScene": "668fd362-074d-4e2a-afba-28df2311e773",
   "excludeScenes": [],
@@ -51,5 +51,10 @@
     "recordPath": ""
   },
   "appBundle": false,
-  "agreements": {}
+  "agreements": {},
+  "harmonyos-next": {
+    "packageName": "org.cocos2d.demo",
+    "REMOTE_SERVER_ROOT": "",
+    "jsEngine": "JSVM"
+  }
 }

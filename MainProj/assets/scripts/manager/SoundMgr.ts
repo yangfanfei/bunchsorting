@@ -15,6 +15,10 @@ export class SoundMgr {
    * 播放单个音频剪辑
    */
   private _audioComp: cc.AudioSource = null;
+    /**
+   * 播放单个音频剪辑
+   */
+  private _audioLoopComp: cc.AudioSource = null;
   /**
    * 当前正在播放的循环音频剪辑的名称。
    */
@@ -39,6 +43,10 @@ export class SoundMgr {
   private initAudio() {
     this._audioComp = new cc.AudioSource();
     this._audioComp.loop = true;
+
+    this._audioLoopComp = new cc.AudioSource();
+    this._audioLoopComp.loop = true;
+    this._audioLoopComp.volume = 0.3;
   }
 
   /**
@@ -58,6 +66,26 @@ export class SoundMgr {
     if(this._audioComp)this.stopSound()
     let clip = await ResMgr.ins.getClip(audio);
     var audioID = cc.audioEngine.play(clip, false, scale);
+  }
+
+    /**
+   * 播放循环音效
+   * @param {string} audio 音频文件名
+   */
+  public async playBackMusic(audio: string): Promise<void> {
+    if (Global.bgm == SoundStatus.off) return;
+    let clip = await ResMgr.ins.getClip(audio);
+    this._audioLoopComp.stop();
+    this._audioLoopComp.clip = clip;
+    this._audioLoopComp.play();
+    this._curLoopAudioName = audio;
+  }
+
+  /**
+   * 停止播放循环音效
+   */
+  public async stopBackMusic(): Promise<void> {
+    this._audioLoopComp.stop();
   }
 
   /**

@@ -7,7 +7,6 @@ import { Global } from "../Global";
 import { Clips, Key, events, ui } from "../enum/Enums";
 import PropMgr from "../manager/PropMgr";
 import { SoundMgr } from "../manager/SoundMgr";
-import CoinMgr from "../manager/CoinMgr";
 import ResMgr from "../manager/ResMgr";
 import { load, save } from "../utils/Tools";
 import BaseView from "./BaseView";
@@ -25,8 +24,6 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class GameView extends BaseView {
-  @property(cc.RichText)
-  lvLabel: cc.RichText = null;
 
   @property(PropMgr)
   backMgr: PropMgr = null;
@@ -45,46 +42,44 @@ export default class GameView extends BaseView {
 
   @property(cc.Node)
   coinBgNode: cc.Node = null;
-  @property(cc.Node)
-  coinManagerNode: cc.Node = null;
+
+  @property(cc.Label)
+  coinLabel: cc.Label = null;
 
   public static ins: GameView = null;
   public initLevel:number = Global.lv;
   private isAllFinish:boolean = false;
+  public coinLabelTest:cc.Label = null;
 
   onEnable() {
     cc.director.on(events.LevelFinish, this.GameResult, this);
     cc.director.on(events.LevelSelectChange, this.eventLevelChange, this);
     cc.director.on(events.AddBunch, this.toolCountChange, this);
     cc.director.on(events.Back, this.toolCountChange, this);
-    cc.director.on(events.Reset, this.toolCountChange, this);
+    cc.director.on(events.Finish, this.toolCountChange, this);
     cc.director.on(events.ToolItemChange, this.toolCountChange, this);
+    cc.director.on(events.CoinChange, this.setCoinLabel, this);
   }
   onDisable() {
     cc.director.off(events.LevelFinish, this.GameResult, this);
     cc.director.off(events.LevelSelectChange, this.eventLevelChange, this);
     cc.director.off(events.AddBunch, this.toolCountChange, this);
     cc.director.off(events.Back, this.toolCountChange, this);
-    cc.director.off(events.Reset, this.toolCountChange, this);
+    cc.director.off(events.Finish, this.toolCountChange, this);
     cc.director.off(events.ToolItemChange, this.toolCountChange, this);
+    cc.director.off(events.CoinChange, this.setCoinLabel, this);
   }
 
   start() {
+    //console.log("  GameView/////////// Start/// ");
     save('isPlayGame', true)
     GameView.ins = this;
+    this.setCoinLabel();
+    SoundMgr.ins.playBackMusic(Clips.back_inGame);
   }
 
   setAllFinish(val:boolean){
     this.isAllFinish = val;
-  }
-
-  setLvLabel(_lv?: number) {
-    let lv = _lv;
-    if(_lv == null || _lv == 0)
-    {
-      lv = Global.lv;
-    }
-    this.lvLabel.string = "第" + lv + "关";
   }
 
   addTool(){
@@ -102,8 +97,13 @@ export default class GameView extends BaseView {
       cc.director.emit(events.Reset);
     } else {
         console.log(e.target);
-        SdkMgr.showRewardAD(() => {
-        cc.director.emit(events.Reset);
+        SdkMgr.showRewardAD((retValue) => {
+        if(retValue == 1)
+        {
+          //cc.director.emit(events.Reset);
+          Global.addToolSetting("reset", 1);
+          this.setProps(Global._toolSetting);
+        }
       });
     }
     this.setProps(Global._toolSetting);
@@ -118,8 +118,13 @@ export default class GameView extends BaseView {
       cc.director.emit(events.Back);
     } else {
       //console.log(e.target);
-      SdkMgr.showRewardAD(() => {
-         cc.director.emit(events.Back);
+      SdkMgr.showBackRewardAD((retValue) => {
+        if(retValue == 1)
+        {
+          //cc.director.emit(events.Back);
+          Global.addToolSetting("back", 1);
+          this.setProps(Global._toolSetting);
+        }
       });
     }
 
@@ -133,17 +138,22 @@ export default class GameView extends BaseView {
       return
     }
 
-   //if (Global.getToolSetting("bunch") > 0) {
-   //   Global.addToolSetting("bunch", -1);
+   if (Global.getToolSetting("bunch") > 0) {
+      Global.addToolSetting("bunch", -1);
       this.onceAdd = true
       cc.director.emit(events.AddBunch);
-    //} else {
-   //   console.log(e.target);
-   //   SdkMgr.showRewardAD(() => {
-   //     this.onceAdd = true
-   //     cc.director.emit(events.AddBunch);
-   //   });
-    //}
+    } else {
+      console.log(e.target);
+      SdkMgr.showBunchRewardAD((retValue) => {
+        if(retValue == 1)
+        {
+          //this.onceAdd = true
+          //cc.director.emit(events.AddBunch);
+          Global.addToolSetting("bunch", 1);
+          this.setProps(Global._toolSetting);
+        }
+      });
+    }
     this.setProps(Global._toolSetting);
   }
 
@@ -151,25 +161,25 @@ export default class GameView extends BaseView {
     if (Global.getToolSetting("finish") > 0) {
       Global.addToolSetting("finish", -1);
       console.log(" Btn.Click...  Finish...");
-      cc.director.emit(events.LevelFinish);
+      //cc.director.emit(events.LevelFinish);
+      GameMgr.ins.randomRemoveColor();
     } else {
-   //   console.log(e.target);
-   //   SdkMgr.showRewardAD(() => {
-   //     this.onceAdd = true
-   //     cc.director.emit(events.AddBunch);
-   //   });
+      console.log(e.target);
+      SdkMgr.showFinishRewardAD((retValue) => {
+        if(retValue == 1)
+        {
+          //GameMgr.ins.randomRemoveColor();
+          //cc.director.emit(events.LevelFinish);
+          Global.addToolSetting("finish", 1);
+          this.setProps(Global._toolSetting);
+        }
+      });
     }
     this.setProps(Global._toolSetting);
   }
 
-  public onTimeStopClick(e: cc.Event.EventTouch) {
-    console.log(e.target);
-    //super.showVideo(() => {
-    //  cc.director.emit(events.TimeStop);
-    //});
-  }
-
   public onBackMainClick(){
+    GameMgr.ins.setInGame(false);
     super.close();
     this.node.destroy();
     cc.director.emit(events.BackToMain);
@@ -180,49 +190,18 @@ export default class GameView extends BaseView {
     this.setGuideStateHide();
   }
 
-  //#endregion
-  private tween: cc.Tween = null;
-  public playCoinAnimation(cupNode:cc.Node)
-  {
-     let origPos = cupNode.position;
-     let origWorldPos = cupNode.parent.convertToWorldSpaceAR(origPos);
-     let coinNode = cc.instantiate(this.coinPrefab);
-     let labelPos = CoinMgr.ins.getLabelPosition();
-     let labelWorldPos2 = CoinMgr.ins.coinLabel.node.parent.convertToWorldSpaceAR(labelPos);
-     let labelWorldPos3 = this.coinManagerNode.convertToWorldSpaceAR(labelWorldPos2);
-     let labelDestNodePos = this.effectRoot.convertToNodeSpaceAR(labelWorldPos2);
-     this.effectRoot.addChild(coinNode);
-     /*console.log(" playCoinAnimation.origPos:: (",origPos.x,",",origPos.y,",",origPos.z,") labelOrigPos:: (",labelPos.x,",",labelPos.y,",",labelPos.z,")",
-       "origWorldPos:: (",origWorldPos.x,",",origWorldPos.y,",",origWorldPos.z,")",
-       "labelDestNodePos:: (",labelDestNodePos.x,",",labelDestNodePos.y,",",labelDestNodePos.z,")",
-       "labelWorldPos2:: (",labelWorldPos2.x,",",labelWorldPos2.y,",",labelWorldPos2.z,")",
-       "labelWorldPos3:: (",labelWorldPos3.x,",",labelWorldPos3.y,",",labelWorldPos3.z,")"
-     );*/
-     coinNode.position = origPos;
-      this.tween = cc
-        .tween(coinNode)
-        .to(1, { x: labelPos.x, y: labelPos.y, angle: 360 }, { easing: 'quartIn' }) 
-        .call(() => {
-          this.tween = null; 
-          coinNode.destroy();
-          Global.addCoin(Global.tubeRewardCoin);
-          CoinMgr.ins.setCoinLabel();
-        })
-        .start();
-  }
-
   async GameResult() {
     if(this.isAllFinish == true){
       return;   
     }
 
-    console.log(" GameView... GameResult::: ");
+    //console.log(" GameView... GameResult::: ");
     this.onceAdd = false
     Global.addLv();
     this.init();
     SoundMgr.ins.playSound(Clips.Show_Victory);
     const view = await ResMgr.ins.getUI(ui.VictoryView);
-    // cc.instantiate(view)
+
     cc.find("Canvas").addChild(view);
     view.getComponent(VictoryView).init();
     this.isAllFinish = true;
@@ -234,7 +213,6 @@ export default class GameView extends BaseView {
     {
       Global.lv = _lv;
     }
-    this.setLvLabel(_lv);
 
     let toolSetting = load(Key.ToolSetting, 2);
     Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
@@ -243,17 +221,28 @@ export default class GameView extends BaseView {
   }
 
   toolCountChange(){
+    //console.log("  ToolCountChange: ToolSetting:::: ",Global._toolSetting)
     this.setProps(Global._toolSetting);
   }
 
   setProps(props: Props) {
+    //console.log("  SetProps: setProps:::: ",props)
     this.bunchMgr.setNum(props.bunch);
     this.backMgr.setNum(props.back);
     this.finishMgr.setNum(props.finish);
   }
 
   eventLevelChange(){
-    this.setLvLabel();
+    
+  }
+
+  setCoinLabel(){
+    //console.log("  GameView.  SetCoinLable::::::::::::  ");
+    if(this.coinLabel)
+    {
+      this.coinLabel.string = Global.getCurrentCoin().toString();
+    }
+    
   }
 
   checkShowGuide(){

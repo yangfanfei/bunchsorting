@@ -4,6 +4,7 @@
  */
 import { events, ui } from '../enum/Enums';
 import { Global } from '../Global';
+import { WxPlatform } from './WX/WxPlatform';
 
 export class SdkMgr {
 
@@ -12,76 +13,111 @@ export class SdkMgr {
     static customOn1 = false;
 
     static initSdk(){
-        window["GD_OPTIONS"] = {
-            "gameId": "db32138e68cf4dbb98abd870cf93a693",
-            "loader": { enabled: true },
-            "onEvent": function (event) {
-                switch (event.name) {
-                    case "SDK_GAME_START":
-                        console.log(" SDK.Game.Start.Event......... ");
-                        // advertisement done, resume game logic and unmute audio
-                        break;
-                    case "SDK_GAME_PAUSE":
-                        console.log(" SDK.Game.Pause.Event......... ");
-                        // pause game logic / mute audio
-                        break;
-                    case "SDK_GDPR_TRACKING":
-                        console.log(" SDK.Gdpr.Tracking.Event......... ");
-                        // this event is triggered when your user doesn't want to be tracked
-                        break;
-                    case "SDK_GDPR_TARGETING":
-                        console.log(" SDK.Gdpr.Targeting.Event......... ");
-                        // this event is triggered when your user doesn't want personalised targeting of ads and such
-                        break;
-                    //case "SDK_REWARDED_WATCH_COMPLETE":
-                    //    console.log(" SDK.Rewarded.Watch.Complete.Event......... ");
-                    //    break;
-                }
-            },
-        };
-
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = 'https://html5.api.gamedistribution.com/main.min.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'gamedistribution-jssdk'));
+    
     }
 
     static closeAd() {
         const system = cc.sys.platform;
     }
 
-    static showBanner() {
-        const system = cc.sys.platform;
+
+    static login()
+    {
+        // 微信登录，获取code[citation:4]
+        wx.login({
+            success: (res) => {
+                if (res.code) {
+                    console.log('登录成功，code:', res.code);
+                    //this.code = res.code;
+                }
+            }
+        });
+    }
+
+    static shareFn(CB) {
+        if (!window["wx"] && !window["tt"]) {
+            CB()
+            return
+        }
+
+        if (window["wx"]) {
+            setTimeout(() => {
+               WxPlatform.ins.showShare();
+                setTimeout(() => {
+                    CB && CB();
+                }, 2000);
+            }, 500);
+        }
     }
 
     static showInterstial(delay = 0) {
         const system = cc.sys.platform;
-
-    }
-
-
-    static showAD(CB){
-        if (typeof gdsdk !== 'undefined' && gdsdk.showAd !== 'undefined') {
-            console.log("CallShowAD............");
-            gdsdk.showAd()
-            .then(response => {
-                    CB && CB();
-                    console.log("Ad.Watch.Complete.Event......... ");
-                })
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showInterstitialAd(0.5);
+                break;
         }
     }
 
     static showRewardAD(CB){
-        if (typeof gdsdk !== 'undefined' && gdsdk.showAd !== 'undefined') {
-            gdsdk.showAd('rewarded')
-             .then(response => {
-                    CB && CB();
-                    console.log("Rewarded.Watch.Complete.Event......... ");
-                })
+        const system = cc.sys.platform;
+        console.log("Show Reward  AD::::::::::::::: CurrentSystem: ",system);
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showRewardVideo(CB);
+                break;
+        }
+    }
+
+    static showSignRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showSignRewardVideo(CB);
+                break;
+        }
+    }
+
+    static showLuckyDrawRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showLuckyDrawRewardVideo(CB);
+                break;
+        }
+    }
+
+    static showBackRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showBackRewardVideo(CB);
+                break;
+        }
+    }
+
+    static showBunchRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showBunchRewardVideo(CB);
+                break;
+        }
+    }
+
+    static showFinishRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showFinishRewardVideo(CB);
+                break;
         }
     }
     
@@ -89,14 +125,69 @@ export class SdkMgr {
         console.log("SdkMgr.showRewardVideo.......... ");
     }
 
-    static shareFn(CB) {
 
-    }
     static shareVideoFn(videoPath, CB) {
 
     }
-    showCustomAd(callback: Function) {
-       
+    
+    static showCustomAd(CB) {
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showCustomAd(CB);
+                break;
+        }
+    }
+
+    static hideCustomAd(){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.hideCustomAd();
+                break;
+        }
+    }
+
+    static showLuckyDrawCustomAd(){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showLuckyDrawCustomAd();
+                break;
+        }
+    }
+
+    static hideLuckyDrawCustomAd(){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.hideLuckyDrawCustomAd();
+                break;
+        }
+    }
+
+    static showSignCustomAd(){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showSignCustomAd();
+                break;
+        }
+    }
+
+    static hideSignCustomAd(){
+               const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.hideSignCustomAd();
+                break;
+        } 
     }
 }
 

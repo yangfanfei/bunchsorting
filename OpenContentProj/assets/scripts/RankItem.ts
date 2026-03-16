@@ -31,21 +31,31 @@ export interface LinkItemData {
 * 更新头像
 * @param url 头像链接
 */
-export function updateAvatar(url: string) {
-    return new Promise<cc.SpriteFrame>((resolve, reject) => {
+export function updateAvatar(itemNode:cc.Sprite, url: string) {
+    //return new Promise<cc.SpriteFrame>((resolve, reject) => {
         // resolve()
         let image = wx.createImage();
         image.onload = () => {
             let texture = new cc.Texture2D();
             texture.initWithElement(image);
             texture.handleLoadedTexture();
-            resolve(new cc.SpriteFrame(texture))
-            // this.ItemNode.getChildByName('HeaderImg').getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(texture);
+            console.log(" WXImageLoadSuccesss:::::: URL: ",url);
+            //resolve(new cc.SpriteFrame(texture))
+            //this.ItemNode.getChildByName('HeaderImg').getComponent(cc.Sprite).spriteFrame = new cc.SpriteFrame(texture);
+            itemNode.spriteFrame = new cc.SpriteFrame(texture);
         };
+
+        image.onerror = (err) => {
+            console.error('头像图片加载失败:', err);
+            
+        };
+        
         image.src = url;
-    })
+        console.log(" WX Image.Load::::::::::: ",url);
+    //})
 
 }
+
 @ccclass
 export default class RankItem extends cc.Component {
 
@@ -62,44 +72,33 @@ export default class RankItem extends cc.Component {
     @property(cc.Node)
     private rankNumLabelNode: cc.Node = null;
 
-    private linkType: LinkType = LinkType.My
     // 复选 是否是我的
     // @property(cc.Boolean)
     // isMy: boolean = false;
     // LIFE-CYCLE CALLBACKS:
     // onLoad () {}
-    init(linkType: LinkType = LinkType.My) {
-        this.linkType = linkType;
-        this.changeState(linkType);
-    }
-    changeState(linkType: LinkType) {
-        /*switch (linkType) {
-            case LinkType.My:
-                this.node.getChildByName('RankNumLabel').color = labelColor[0];
-                this.ItemNode.getChildByName('name').color = labelColor[1];
-                break;
-            case LinkType.Default:
-            case LinkType.Challenge:
-                this.node.getChildByName('RankNumLabel').color = labelColor[1];
-                this.ItemNode.getChildByName('name').color = labelColor[2];
-                break;
-            default:
-                break;
-        }*/
-    }
-    setLvLabel(linkType: LinkType, num: string) {
+    
+    setLvLabel(num: string) {
         this.lvNode.getComponent(cc.RichText).string =` <color=#6ca9c4><b><size=32>${num}关</b> </size></color> `;
     }
 
     start() {
     }
 
-    async setData(data: LinkItemData) {
+    setData(data: LinkItemData) {
         console.log("RankItem.SetData::: ",data);
         this.setRankData(data.num);
         //this.HeadNode.getComponent(cc.Sprite).spriteFrame = await updateAvatar(data.img);
+        if(data.img != "")
+        {
+            updateAvatar(this.HeadNode.getComponent(cc.Sprite), data.img);
+        }
+        else
+        {
+            console.log(" 没有上传新头像，使用默认头像！！ ");
+        }
         this.NameNode.getComponent(cc.Label).string = data.name;
-        this.setLvLabel(this.linkType, data.maxLv);
+        this.setLvLabel(data.maxLv);
     }
 
     setRankData(rankNum:number)

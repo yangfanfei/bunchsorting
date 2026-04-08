@@ -3,8 +3,7 @@
  * @Description:  signItem View
  */
 
-import { prop } from "../enum/Enums";
-import { AccessType, signInInfo } from "../base/Interface";
+import { signInInfo } from "../base/Interface";
 import PropBlockMgr from "../manager/PropBlockMgr";
 import ResMgr from "../manager/ResMgr";
 import { FuncUtil } from "../base/FuncUtil";

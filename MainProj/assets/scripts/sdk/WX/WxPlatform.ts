@@ -1,4 +1,6 @@
+import { Global } from "../../Global";
 import Main from "../../Main";
+import UserDataMgr from "../../manager/UserDataMgr";
 import GameView from "../../view/GameView";
 
 
@@ -19,6 +21,9 @@ export class WxPlatform {
     private addBunchRewardID:string = "adunit-1c09c1bae24c04d0"; // 关卡加串激励
     private finishRewardID:string = "adunit-5d114428fe0f29bf"; // 关卡结束激励
 
+    private dressUpID:string = "adunit-ddf269cf1f790b22"; // 皮肤激励广告
+    private lifeID:string = "adunit-7c3b0b920a3675f1"; // 体力激励广告
+
     private intersitialID:string = "adunit-75fb911d443c0bfd"; // 插屏广告
 
     static get ins() {
@@ -31,11 +36,60 @@ export class WxPlatform {
         return this._ins;
     }
 
+    onLaunch(options) {
+        // 小程序初始化完成时触发，全局只触发一次
+        console.log('游戏启动');
+        // 在这里检查版本更新等
+    }
+
+    onShow(options) {
+        // 从后台进入前台时触发
+        console.log('游戏显示');
+        // 恢复游戏音乐
+        // 刷新界面数据
+    }
+
+    onHide() {
+        // 从前台进入后台时触发（这是你需要的核心回调）
+        console.log('游戏隐藏/切换至后台');
+        
+        // ✅ 关键操作：在这里保存游戏数据
+        this.saveGameData()
+        
+        // 可选：显示一个"游戏已暂停"的提示或界面
+    }
+
+    onError(msg) {
+        // 捕获脚本错误
+        console.error('游戏错误：', msg);
+    }
+
+    saveGameData() {
+        // 实现数据保存逻辑
+        let life = UserDataMgr.ins.getCurrentLife();
+        let lifeTimeTick = UserDataMgr.ins.getLifeTimeTick();
+        Global.saveLife(life);
+        Global.saveLifeTimeTick(lifeTimeTick);
+        console.log('正在保存游戏进度...');
+    }
+
     init() {
         this.wx.showShareMenu({
             withShareTicket: true,
             menus: ['shareAppMessage', 'shareTimeline']
         })
+
+        const onHideCallback = () => {
+            this.saveGameData()
+            console.log('onHideCallback 监听到游戏进入后台');
+        };
+        this.wx.onHide(onHideCallback);
+
+        const onShowCallback = () => {
+            console.log('onShowCallback 游戏显示');
+        };
+        this.wx.onShow(onShowCallback);
+
         // 绑定分享参数
         //const shares = Main.ins.Shares[0].sharePics;
         /*if (shares.length > 0) {
@@ -630,6 +684,134 @@ export class WxPlatform {
         });
 
         my.rewardFinishVideo = rewardedVideoAd;
+        rewardedVideoAd.load().then(() => {
+            this.wx.showToast({
+                title: "加载中，请稍后",
+                icon: 'success',//图标，支持"success"、"loading" 
+                duration: 1500,//提示的延迟时间，单位毫秒，默认：1500 
+                mask: false,//是否显示透明蒙层，防止触摸穿透，默认：false 
+                success: function () { },
+                fail: function () { },
+                complete: function () { }
+            })
+
+            console.log('激励视频 广告加载成功');
+            rewardedVideoAd.show();
+        });
+
+        let showToastState = false
+        rewardedVideoAd.onError(err => {
+            console.log('激励视频 广告显示失败', err);
+            if (!showToastState) {
+                showToastState = true
+            } else {
+                return
+            }
+            this.wx.showToast({
+                title: "请稍后再试",
+                icon: 'fail',//图标，支持"success"、"loading" 
+                duration: 1500,//提示的延迟时间，单位毫秒，默认：1500 
+                mask: false,//是否显示透明蒙层，防止触摸穿透，默认：false 
+                success: function () { },
+                fail: function () { },
+                complete: function () { }
+
+            })
+            callback(2);
+        })
+
+        var fun = function (res) {
+            if (res && res.isEnded) {
+                console.log('res:  ', res);
+                callback(1);
+                rewardedVideoAd.offClose(fun);
+            } else {
+                console.log('播放中途退出');
+                callback(0);
+            }
+        }
+        
+        rewardedVideoAd.onClose(fun);
+    }
+
+    dressupReward: any;
+    showDressupRewardVideo(callback?: Function) {
+        let my = this;
+        let id = this.dressUpID;
+        if (my.dressupReward != null) {
+            my.dressupReward.offClose(fun);
+        }
+
+        console.log(" Show Dress Up Video::::::::::  ",id);
+        let rewardedVideoAd = this.wx.createRewardedVideoAd({
+            adUnitId: id,
+        });
+
+        my.dressupReward = rewardedVideoAd;
+        rewardedVideoAd.load().then(() => {
+            this.wx.showToast({
+                title: "加载中，请稍后",
+                icon: 'success',//图标，支持"success"、"loading" 
+                duration: 1500,//提示的延迟时间，单位毫秒，默认：1500 
+                mask: false,//是否显示透明蒙层，防止触摸穿透，默认：false 
+                success: function () { },
+                fail: function () { },
+                complete: function () { }
+            })
+
+            console.log('激励视频 广告加载成功');
+            rewardedVideoAd.show();
+        });
+
+        let showToastState = false
+        rewardedVideoAd.onError(err => {
+            console.log('激励视频 广告显示失败', err);
+            if (!showToastState) {
+                showToastState = true
+            } else {
+                return
+            }
+            this.wx.showToast({
+                title: "请稍后再试",
+                icon: 'fail',//图标，支持"success"、"loading" 
+                duration: 1500,//提示的延迟时间，单位毫秒，默认：1500 
+                mask: false,//是否显示透明蒙层，防止触摸穿透，默认：false 
+                success: function () { },
+                fail: function () { },
+                complete: function () { }
+
+            })
+            callback(2);
+        })
+
+        var fun = function (res) {
+            if (res && res.isEnded) {
+                console.log('res:  ', res);
+                callback(1);
+                rewardedVideoAd.offClose(fun);
+            } else {
+                console.log('播放中途退出');
+                callback(0);
+            }
+        }
+        
+        rewardedVideoAd.onClose(fun);
+    }
+
+    lifeReward: any;
+    showLifeRewardVideo(callback?: Function) {
+        let my = this;
+        let id = this.lifeID;
+        if (my.lifeReward != null) {
+            my.lifeReward.offClose(fun);
+        }
+
+        let rewardedVideoAd = this.wx.createRewardedVideoAd({
+            adUnitId: id,
+        });
+
+        console.log(" ShowLifeReward::::::: ",id);
+        my.lifeReward = rewardedVideoAd;
         rewardedVideoAd.load().then(() => {
             this.wx.showToast({
                 title: "加载中，请稍后",

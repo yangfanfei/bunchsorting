@@ -6,6 +6,7 @@
 import LuckyDrawView from "../view/LuckyDrawView";
 import MainView from "../view/MainView";
 import RankListView from "../view/RankListView";
+import ShopUseItemView from "../view/ShopUseItemView";
 import SignView from "../view/SignView";
 
 const { ccclass, property } = cc._decorator;
@@ -73,11 +74,12 @@ export const CUP_SELECTED_MOVE_HEIGHT = 100;
 export const dft_lingWidth = 6; // default water flow width
 
 export const spacesArr = {
-  [1]: [40, 1], // tubecount 1，
-  [2]: [120, 1], // tubecount 2，
-  [3]: [120, 1], // tubecount 3，
-  [4]: [100, 1], // tubecount 4，
-  [5]: [90, 1], // tubecount 5，
+  [1]: [40, 1], // bunch count 1，
+  [2]: [120, 1], // bunch count 2，
+  [3]: [120, 1], // bunch count 3，
+  [4]: [100, 1], // bunch count 4，
+  [5]: [100, 1], // bunch count 5，
+  [6]: [80, 1], // bunch count 5，
 };
 
 export enum ItemType {
@@ -92,6 +94,34 @@ export enum SoundStatus {
   on = 1,
   off = -1,
 }
+
+export enum ShopItemState {
+  ST_UNACTIVE = 0,
+  ST_ACTIVE = 1,
+}
+
+/** 获取方式 */
+export enum AccessType {
+  /** 分享 */
+  Share = "0",
+  /** 视频 */
+  Video = "1",
+  /** 碎片 */
+  Fragment = "2",
+  None = "3",
+}
+
+export enum SignInType {
+  // NOT_IN_LIST = '0',
+  DAY1 = "1",
+  DAY2 = "2",
+  DAY3 = "3",
+  DAY4 = "4",
+  DAY5 = "5",
+  DAY6 = "6",
+  FULL_WEEK = "7",
+}
+
 /**
  * sound Clips
  */
@@ -106,6 +136,7 @@ export const Clips = {
   back_inGame: "back_inGame",
   back_inMain: "back_inMain",
 };
+
 /**
  * asset type
  */
@@ -113,6 +144,7 @@ export type AssetType = {
   type: typeof cc.Asset;
   path: string;
 };
+
 /**
  * assettypes and paths
  */
@@ -132,7 +164,6 @@ export const Key = {
   CupSetting: "CupSetting",
   ReceiveList: 'ReceiveList',
   ReceiveListTime: 'ReceiveListTime',
-  SideReward: 'SideReward',
   CodeList:'CodeList',
   CoinCount: 'CoinCount',
   CurMaxLevel: 'CurMaxLevel',
@@ -142,7 +173,12 @@ export const Key = {
   LuckyDrawCount:"LuckyDrawCount",
   LuckyDrawTime:"LuckyDrawTime",
   LuckyShowAdTime:"LuckyShowAdTime",
-  LuckyDrawHistory:"LuckyDrawHistory"
+  LuckyDrawHistory:"LuckyDrawHistory",
+  CurrentLife:"CurrentLife",
+  LifeTimeTick:"LifeTimeTick",
+  ActiveDressupItems:"ActiveDressupItems",
+  UseDressupItems:"UseDressUpItems",
+  AccAdCount:"AccAdCount"
 };
 
 /** Event List */
@@ -163,7 +199,10 @@ export const events = {
   LevelSelectChange: "LevelSelectChange",
   BackToMain: "BackToMain",
   ToolItemChange: "ToolItemChange",
-  CoinChange:"CoinChange"
+  CoinChange:"CoinChange",
+  LifeChange:"LifeChange",
+  DressUpSelectChange:"DressUpSelectChange",
+  RefreshShopShow:"RefreshShopShow"
 };
 
 /* for ui prefabs config */
@@ -177,13 +216,16 @@ export const ui = {
   LuckyDrawView: { name: 'LuckyDrawView', layer: 6, clear: false },
   SignView: { name: "SignView", layer: 6, clear: false },
   RankListView: { name: "RankListView", layer: 6, clear: false },
+  ShopView: { name: 'ShopView', layer: 6, clear: false },
+  ShopUseItemView: { name: 'ShopUseItemView', layer: 6, clear: false },
+  ShopGetItemView: { name: 'ShopGetItemView', layer: 6, clear: false },
 };
 
-export const prop = {
+/*export const prop = {
   reset: { name: "reset", layer: 3, clear: false },
   back: { name: "back", layer: 3, clear: false },
   tube: { name: "tube", layer: 3, clear: false },
-};
+};*/
 
 interface colorList {
     colors: string[];

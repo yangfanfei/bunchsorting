@@ -3,9 +3,13 @@
  * @Description: 一些公用函数类
  */
 
+import ResMgr from "../manager/ResMgr";
 import MainView from "../view/MainView";
 
 export class FuncUtil {
+
+  static grayColor = new  cc.Color(128,128,128,255);
+
   static getSprFrameByItemType(itemType:string)
   {
     let retSpr = null;
@@ -35,6 +39,44 @@ export class FuncUtil {
     }
 
     return retSpr;
+  }
+
+  static setNodeAndChildrenGray(node: cc.Node) {
+      // 设置当前节点颜色
+      let spr = node.getComponent(cc.Sprite);
+      let lab = node.getComponent(cc.Label);
+      let laboutline = node.getComponent(cc.LabelOutline);
+      if(spr)
+      {
+        this.setSprGray(spr, true);
+      }
+      if(lab)
+      {
+        lab.node.color = cc.Color.GRAY;
+      }
+      if(laboutline)
+      {
+        console.log(" 字体边框置灰：：：  Node.Name::: ",node.name);
+        laboutline.color = new cc.Color(64,64,64);
+      }
+      
+      // 递归处理子节点
+      node.children.forEach(child => {
+          this.setNodeAndChildrenGray(child);
+      });
+  }
+
+  static getSprFrameByFruitId(iconID:number)
+  {
+    let index = "fruiticon" + iconID; // convert to icon index
+    return ResMgr.ins.getFrameMap(index);
+  }
+
+  static getSprFrameByBunchId(iconID:number)
+  {
+    let index = "bunchicon" + iconID; // convert to icon index
+    console.log(" GetSprFrameByBunchID:::: ",index);
+    return ResMgr.ins.getFrameMap(index);
   }
 
   static setSprGray(sprNode:cc.Sprite, isGray:boolean = false)

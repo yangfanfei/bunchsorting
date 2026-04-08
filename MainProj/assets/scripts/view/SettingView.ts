@@ -8,6 +8,7 @@ import { Global } from "../Global";
 import { events } from "../enum/Enums";
 import { SoundMgr } from "../manager/SoundMgr";
 import BaseView from "./BaseView";
+import ConfigMgr from "../manager/ConfigMgr";
 
 const { ccclass, property } = cc._decorator;
 

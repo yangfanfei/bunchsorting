@@ -10,6 +10,9 @@ import GameView from "../view/GameView";
 import { BunchInfo, SpacesArr } from "../base/Interface";
 import Bunch from "../game/Bunch";
 import { randomNum } from "../base/Math";
+import { MAX_TUBE } from "../base/Const";
+import { FuncUtil } from "../base/FuncUtil";
+import UserDataMgr from "./UserDataMgr";
 
 const { ccclass, property } = cc._decorator;
 
@@ -34,6 +37,9 @@ export default class GameMgr extends cc.Component {
   @property(cc.Node)
   dishBg3: cc.Node = null;
 
+  @property(cc.Node)
+  dishLayout: cc.Node = null;
+
   @property(cc.SpriteFrame)
   coinSpr:cc.SpriteFrame = null;
 
@@ -46,13 +52,9 @@ export default class GameMgr extends cc.Component {
   @property(cc.SpriteFrame)
   bunchSpr:cc.SpriteFrame = null;
 
-  @property([cc.SpriteFrame])
-  public bunchImgs: cc.SpriteFrame[] = [];
-
   public static ins: GameMgr = null;
 
   protected curCfg: Array<BunchInfo> = [];
-
   private curBunchs: Array<Bunch> = [];
 
   private layout_v: cc.Layout = null;
@@ -97,8 +99,6 @@ export default class GameMgr extends cc.Component {
     if(GameView.ins)
     {
       GameView.ins.setAllFinish(false);
-      GameView.ins.setCoinLabel();
-      //GameView.ins.addTool();
     }
     this.isPlaying = true;
     this.isInGame = true;
@@ -254,7 +254,7 @@ export default class GameMgr extends cc.Component {
   }
 
   public checkCanAddBunch() {
-    return  this.curCfg.length < Global.maxTube;
+    return  this.curCfg.length < MAX_TUBE;
   }
 
   public checkCanUndo() {
@@ -290,6 +290,8 @@ export default class GameMgr extends cc.Component {
       this.curBunchs.push(cup);
     }
 
+    let count = Math.ceil(len/6);
+
     if (!this.layout_v) {
       this.layout_v = this.createLayout(
         cc.Layout.Type.VERTICAL,
@@ -300,7 +302,20 @@ export default class GameMgr extends cc.Component {
       this.layout_v.node.zIndex = 1;
     }
 
-    this.layout_v.node.setPosition(new cc.Vec3(0, 65, 0));
+    if(count == 1)
+    {
+      this.layout_v.node.setPosition(new cc.Vec3(0, 60, 0));
+    }
+    else if(count == 2)
+    {
+      this.layout_v.node.setPosition(new cc.Vec3(0, 60, 0));
+    }
+    else if(count == 3)
+    {
+      this.layout_v.node.setPosition(new cc.Vec3(0, 0, 0));
+    }
+
+    console.log("  Bunch.Count::: ",this.curBunchs.length,"  Count:::: ",count);
 
     let layoutArr: Array<cc.Layout> = [];
 
@@ -321,12 +336,9 @@ export default class GameMgr extends cc.Component {
       layoutArr.push(layout);
     }
 
-    // layout.node.parent = this.layout_v.node;
-    // layout.enabled = false;
-
     this.layout_v.enabled = true;
     this.layout_v.node.scale = spacesArr[maxNum][1];
-    this.layout_v.spacingY = spacesArr[maxNum][2] || 40;
+    this.layout_v.spacingY = spacesArr[maxNum][2] || 10;
 
     for (let layout of layoutArr) {
       layout.updateLayout();
@@ -344,13 +356,13 @@ export default class GameMgr extends cc.Component {
   createBunchIndexGroups(len: number) {
     let bunchGruoups: Array<Array<number>> = [];
     let count = 1;
-    if (len <= 4) {
+    if (len <= 6) {
       let idGroup: Array<number> = [];
       for (let i = 0; i < this.curBunchs.length; i++) {
         idGroup.push(i);
       }
       bunchGruoups.push(idGroup);
-    } else if (len <= 8) {
+    } else if (len <= 12) {
 
       count = 2;
       let idGroup: Array<number> = [];
@@ -371,23 +383,8 @@ export default class GameMgr extends cc.Component {
     else
     {
       count = 3;
-      let id1 = 0;
-      let id2 = 0;
-      if(len == 13)
-      {
-        id1 = 5;
-        id2 = 9;
-      }
-      else if(len >= 14)
-      {
-        id1 = 5;
-        id2 = 10;
-      }
-      else
-      {
-        id1 = len / 3;
-        id2 = len*2 / 3;
-      }
+      let id1 = 6;
+      let id2 = 12;
 
       let idGroup: Array<number> = [];
       let i = 0;
@@ -414,29 +411,21 @@ export default class GameMgr extends cc.Component {
       this.dishBg1.active = false;
       this.dishBg3.active = false;
       this.dishBg2.active = true;
-
-      this.dishBg1.setPosition(new cc.Vec3(0, 470, 0));
-      this.dishBg2.setPosition(new cc.Vec3(0, 60, 0));
-      this.dishBg3.setPosition(new cc.Vec3(0, -350, 0));
+      this.dishLayout.setPosition(new cc.Vec3(0, -220, 0));
     }
     else if(count == 2)
     {
       this.dishBg3.active = false;
       this.dishBg1.active = true;
       this.dishBg2.active = true;
-
-      this.dishBg1.setPosition(new cc.Vec3(0, 260, 0));
-      this.dishBg2.setPosition(new cc.Vec3(0, -150, 0));
+      this.dishLayout.setPosition(new cc.Vec3(0, -40, 0));
     }
     else if(count == 3)
     {
       this.dishBg3.active = true;
       this.dishBg1.active = true;
       this.dishBg2.active = true;
-
-      this.dishBg1.setPosition(new cc.Vec3(0, 470, 0));
-      this.dishBg2.setPosition(new cc.Vec3(0, 60, 0));
-      this.dishBg3.setPosition(new cc.Vec3(0, -350, 0));
+      this.dishLayout.setPosition(new cc.Vec3(0, 100, 0));
     }
 
     return bunchGruoups;
@@ -461,14 +450,12 @@ export default class GameMgr extends cc.Component {
   
       layout.spacingX = spacesArr[maxNum][0];
       layout.node.scale = 1 || spacesArr[maxNum][1];
-      layout.spacingY = spacesArr[maxNum][2] || 40;
+      layout.spacingY = spacesArr[maxNum][2] || 10;
   
-      console.log(" CreateBunchLayout:: ",index);
       let idGroup = bunchIdxGroups[index];
   
       for (let j = 0; j < idGroup.length; j++) {
         let id = idGroup[j];
-  
         this.curBunchs[id].node.parent = layout.node;
       }
   
@@ -476,8 +463,6 @@ export default class GameMgr extends cc.Component {
     }
 
   createBunchNode(info: BunchInfo) {
-    const { current } = Global.cupSetting;
-
     const bunch = cc.instantiate(this.bunchPrefab);
     const bunchComp = bunch.getComponent(Bunch);
 
@@ -576,16 +561,18 @@ export default class GameMgr extends cc.Component {
     let desPos1 = new cc.Vec3(srcPos.x, srcPos.y+210, srcPos.z);
     let desPos2 = new cc.Vec3(desPos3.x, desPos3.y+250, desPos3.z);
 
+    let realColor = UserDataMgr.ins.indexToActualColorId(color);
+    console.log("  startMove:::: realColor: ",realColor," Color: ",color);
     //console.log(" After.DestPos:::: ",desPos4);
     for(var i = 0 ; i < moveCount; ++i)
     {
       let desPos4 = new cc.Vec3(desPos3.x, desPos3.y + 160 - (destTopEmptyCount - i)*65, desPos3.z);
       let effectNode = cc.instantiate(this.flyEffectNode);
       let effectSprite = effectNode.getComponent(cc.Sprite);
-      let sf = this.bunchImgs[color-1];
+      let sf = FuncUtil.getSprFrameByFruitId(realColor)
       sf.getOriginalSize();
 
-      effectSprite.spriteFrame = this.bunchImgs[color-1];
+      effectSprite.spriteFrame = FuncUtil.getSprFrameByFruitId(realColor);
       
       let srcPos1 = new cc.Vec3(srcPos.x, srcPos.y + 80 - (srcTopEmptyCount+i)*60, srcPos.z);
 
@@ -604,7 +591,6 @@ export default class GameMgr extends cc.Component {
           effectNode.destroy();
 
           if(this.checkAllFinish() == true){
-            //console.log(" AllFinish:::::::: Send.Event...........");
             cc.director.emit(events.LevelFinish);
           }
           else
@@ -617,8 +603,6 @@ export default class GameMgr extends cc.Component {
         })
         .start();
     }
-
-    //console.log(" StartMove.SrcInfo::: ",srcTopinfo," DestInfo: ",destTopInfo);
   }
 
   checkCanMove(){

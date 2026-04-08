@@ -8,6 +8,9 @@ import { Tools, getDate, load } from "./utils/Tools";
 import ResMgr from "./manager/ResMgr";
 import { SdkMgr } from "./sdk/SdkMgr";
 import { SoundMgr } from "./manager/SoundMgr";
+import WXRecordManager from "./sdk/WX/WXRecordManager";
+import UserDataMgr from "./manager/UserDataMgr";
+import ConfigMgr from "./manager/ConfigMgr";
 
 const { ccclass, property } = cc._decorator;
 
@@ -15,27 +18,17 @@ const { ccclass, property } = cc._decorator;
 export default class Main extends cc.Component {
   // LIFE-CYCLE CALLBACKS:
 
-  @property({ type: cc.Integer, tooltip: "Max Level" })
-  maxLevel = 300;
+  @property({ type: cc.Integer, tooltip: "最大关卡" })
+  maxLevel = 2000;
 
-  @property({ type: cc.Integer, tooltip: "Current Level" })
-  currentLevel = 5;
-
-  //@property({ type: adConfig, tooltip: "Ad Config" })
-  //Platforms: adConfig[] = [];
-
-  //@property({ type: shareConfig, tooltip: "Share Config" })
-  //Shares: shareConfig[] = [];
-
-  //@property({ type: shareVideoConfig, tooltip: "Share Video Config" })
-  //ShareVideoes: shareVideoConfig[] = [];
+  @property({ type: cc.Integer, tooltip: "当前关卡" })
+  currentLevel = 1;
 
   public static ins: Main = null;
 
   onLoad() {
     cc.debug.setDisplayStats(false)
-    this.loadData();
-    this.initMgr();
+    this.loadLocalData();
     Main.ins = this;
   }
 
@@ -57,38 +50,8 @@ export default class Main extends cc.Component {
     ResMgr.ins.getUI(ui.ToastView);
   }
 
-  initMgr(){
-    if(cc.sys.platform == cc.sys.WECHAT_GAME)
-    {
-        //console.log(" Platform in wechat....... ");
-        /*if (typeof wx !== 'undefined' && wx.cloud) {
-            wx.cloud.init({
-                env: 'cloud1-6gmxh81sb3f93d53', // 替换为你的云环境ID，可以在云开发控制台获取
-                traceUser: true      // 是否追踪用户
-            });
-            console.log('云开发初始化成功');
-        } else {
-            console.error('当前环境不支持云开发');
-        }
-
-        SdkMgr.login();
-        this.loadGameData();*/
-    }
-  }
-
-  // 加载游戏数据
-  async loadGameData() {
-      /*try {
-          const db = wx.cloud.database();
-          const result = await db.collection('UserInfo').get();
-          console.log('游戏数据加载成功', result.data);
-      } catch (error) {
-          console.error('游戏数据加载失败', error);
-      }*/
-  }
-
   // load all local data
-  loadData() {
+  loadLocalData() {
     Global.maxLv = this.maxLevel;
     let level = load(Key.Lv);
     if (!level) {
@@ -96,8 +59,6 @@ export default class Main extends cc.Component {
     }
     Global.setLv(level);
     let curMaxLevel = load(Key.CurMaxLevel);
-    let system = cc.sys.platform;
-    //console.log(" LoadData.CurMaxLevel:::: ",curMaxLevel," Current System:: ",system," OS.Window：： ",cc.sys.DESKTOP_BROWSER);
     if(!curMaxLevel){
       curMaxLevel = level;
       Global.currentMaxLv = curMaxLevel;
@@ -110,6 +71,7 @@ export default class Main extends cc.Component {
     let toolSetting = load(Key.ToolSetting, 2);
 
     Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
+    console.log("  Main.Load。。.........。 ToolSetting:::: ",Global._toolSetting);
 
     const cupSetting = load(Key.CupSetting, 2);
     Global.cupSetting = cupSetting ? cupSetting : Global._cupSetting;
@@ -123,9 +85,7 @@ export default class Main extends cc.Component {
     Global.currentCoin = currentCoin ? currentCoin : Global.currentCoin;
 
     const drawCount =   load(Key.LuckyDrawCount, 1);
-    //console.log(" LoadData. DrawCount:::::  ",drawCount);
     Global.luckyDrawCount = drawCount ? drawCount : 2;
-    //console.log(" Global.DrawCount::::::::  ",Global.luckyDrawCount);
 
     const drawAdTime = load(Key.LuckyShowAdTime, 1);
     Global.luckyDrawAdTime = drawAdTime ? drawAdTime : Global.luckyDrawAdTime;
@@ -154,5 +114,14 @@ export default class Main extends cc.Component {
       console.log(" 保存时间与当前抽奖时间相同。。。。。。。。。。。。。。。。 ")
     }
   }
-  // update (dt) {}
+
+  onDestroy()
+  {
+    console.log("   Main::::::::::::  Destroy ");
+    UserDataMgr.ins.clearIntervalTimer();
+  }
+  
+  //update (dt) {
+    //console.log("  Main. Update:::::::::  DT: ",dt);
+  //}
 }

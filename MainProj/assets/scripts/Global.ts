@@ -4,9 +4,11 @@
  */
 
 import { Key, SoundStatus, events } from "./enum/Enums";
-import { Action, ToolInfos } from "./base/Interface";
+import { Action, ShopItemStorageData, ToolInfos } from "./base/Interface";
 import { getDate, load, save } from "./utils/Tools";
 import { LinkType, SubContent } from "./sdk/WX/SubContent";
+import WXRecordManager from "./sdk/WX/WXRecordManager";
+import UserDataMgr from "./manager/UserDataMgr";
 export class Global {
   static Debug = true;
 
@@ -25,18 +27,14 @@ export class Global {
   /** current level */
   static lv = 1;
   /** max level */
-  static maxLv = 900;
+  static maxLv = 2000;
   /** current max level */
   static currentMaxLv = 1;
-  /** max Tube */
-  static maxTube = 15;
   /** one step action */
   static action_list: Array<Action> = [];
   /** record max step action */
   static action_step = 5;
 
-  /*  init coin count  */
-  static startCoin = 0;
   /*  current coin count  */
   static currentCoin = 0;
   /*  fnish one tube award coin count */
@@ -84,6 +82,7 @@ export class Global {
     haveList: ['01'],
     current: '01',
   };
+
   static _codeList: string[] = []
 
   static get codeList(): string[] {
@@ -96,6 +95,7 @@ export class Global {
   static set codeList(value) {
     this._codeList = value;
   }
+
   static get cupSetting() {
     return this._cupSetting;
   }
@@ -121,7 +121,7 @@ export class Global {
   static addLuckyDrawHistory(addIndex:number){
     //console.log(" AddLuckyDrawHistory:::::::  Index:: ",addIndex);
     let addBeforeArr = this.luckyDrawHistory.split(",");
-    console.log("Add HistoryBefore &&&&& LuckDrawHistory: ",this.luckyDrawHistory,"  ARR: ",addBeforeArr," Add.Index:::::: ",addIndex);
+    //console.log("Add HistoryBefore &&&&& LuckDrawHistory: ",this.luckyDrawHistory,"  ARR: ",addBeforeArr," Add.Index:::::: ",addIndex);
     let currentCount = Number(addBeforeArr[addIndex]);
     currentCount = currentCount+1;
     addBeforeArr[addIndex] = currentCount+"";
@@ -176,7 +176,9 @@ export class Global {
    */
   static addToolSetting(key: ToolInfos["key"], value: number) {
     this._toolSetting[key] += +value;
+    //console.log(" addToolSetting::::::::::  ",key, " Value::::: ",value, " this._toolSetting[key] .Value: ",this._toolSetting[key]);
     save(Key.ToolSetting, JSON.stringify(this._toolSetting));
+    //WXRecordManager.ins.updateUserToolInfo();
     //console.log("  addToolSetting:::: KEY::: ",key," Value::: ",value, " this._toolSetting:::: ",this._toolSetting)
   }
 
@@ -191,13 +193,13 @@ export class Global {
   static setToolSettingToZero(key: ToolInfos["key"]){
     this._toolSetting[key] = 0;
     save(Key.ToolSetting, JSON.stringify(this._toolSetting));
-    console.log(" setToolSettingToZero::::::::: ",this._toolSetting);
+    //console.log(" setToolSettingToZero::::::::: ",this._toolSetting);
   }
 
   static setToolSettingValue(key: ToolInfos["key"], value:number){
     this._toolSetting[key] = value;
     save(Key.ToolSetting, JSON.stringify(this._toolSetting));
-    console.log(" setToolSettingValue:::::::  ",this._toolSetting);
+    //console.log(" setToolSettingValue:::::::  ",this._toolSetting);
   }
 
   /**
@@ -215,16 +217,7 @@ export class Global {
       console.log(" Save New Max Level::::: ",this.currentMaxLv);
     }
     save(Key.Lv, this.lv);
-  }
-  
-  /**
-   * Sub Level
-   */
-  static subLv() {
-    if (this.lv > 1) {
-      this.lv--;
-    }
-    save(Key.Lv, this.lv);
+    //WXRecordManager.ins.updateUserLevel(this.lv);
   }
 
   /**
@@ -236,6 +229,76 @@ export class Global {
       this.lv = lv;
     }
     save(Key.Lv, this.lv);
+  }
+
+  static saveLife(life:number){
+    save(Key.CurrentLife, life);
+    console.log("  Save  Life:::::::  ",life);
+  }
+
+  static loadLife()
+  {
+    let data = load(Key.CurrentLife, 1)
+    //console.log(" Global  Load  Life:::::::: ",data);
+    data = data ? data:90;    //默认90
+    UserDataMgr.ins.setLife(data);
+  }
+
+  static saveLifeTimeTick(timeTick:number){
+    save(Key.LifeTimeTick, timeTick);
+    //console.log(" Save Life Time Tick::: ",timeTick);
+  }
+
+  static loadLifeTimeTick(){
+    let data = load(Key.LifeTimeTick, 1)
+    //console.log(" Global  Load  Life:::::::: ",data);
+    data = data ? data:0;
+    UserDataMgr.ins.setLifeTimeTick(data);
+  }
+
+  static loadActiveDressupItems(){
+    let data = load(Key.ActiveDressupItems, 0);
+    console.log("loadActiveDressupItems::: DATA:  ",data);
+    data = data?data:"default";
+    UserDataMgr.ins.setActiveDressUpItemsByStr(data);
+  }
+
+  static saveActiveDressupItems(datas){
+    console.log(" save Active DressUp Datas::::::::: ",datas);
+    console.log(" JSON::::::::::::  ",datas);
+    save(Key.ActiveDressupItems, JSON.stringify(datas));
+  }
+
+  static loadUseDressupItems(){
+    let data = load(Key.UseDressupItems, 0)
+    data = data?data:"default";
+    console.log("loadUseDressupItems::: DATA:  ",data);
+    UserDataMgr.ins.setUseDressUpItemsByStr(data);
+  }
+
+  static clearActiveItems()
+  {
+    save(Key.ActiveDressupItems, null);
+  }
+
+  static saveUseDressupItems(data){
+    //console.log(" Save Use Dress Up Items:::: ",data);
+    //console.log(" Save... JSON:::: ",JSON.stringify(data));
+    save(Key.UseDressupItems, JSON.stringify(data));
+  }
+
+  static loadAccAdCount()
+  {
+    let data = load(Key.AccAdCount, 1);
+    data = data?data:0
+    UserDataMgr.ins.setAccAdCount(data);
+  }
+
+  static saveAccAdCount()
+  {
+    let val = UserDataMgr.ins.getAccAdCount();
+    //console.log("Save Acc Ad Count::::::: ",val);
+    save(Key.AccAdCount, val);
   }
 
   /**
@@ -255,9 +318,10 @@ export class Global {
       console.error("Sub coin is not enough ！！！！");
       return;
     }
-
     this.currentCoin = this.currentCoin - number;
     save(Key.CoinCount, this.currentCoin);
+
+    //WXRecordManager.ins.updateUserCoin(this.currentCoin);
   }
 
   static getCurrentCoin(){
@@ -270,13 +334,13 @@ export class Global {
     if (Global._signArr.length === 0) {
       Global._signArr = load(Key.SignArr, 2) || [];
     }
-    console.log(" Load.SignArr:::::  ",Global._signArr);
+    //console.log(" Load.SignArr:::::  ",Global._signArr);
     return Global._signArr;
   }
 
   static set signArr(arr: string[]) {
     Global._signArr = arr;
-    console.log(" Set.SignArr:::::  ",Global._signArr);
+    //console.log(" Set.SignArr:::::  ",Global._signArr);
     save(Key.SignArr, JSON.stringify(arr));
   }
 
@@ -286,12 +350,12 @@ export class Global {
     let arr = this._signArr;
     arr.push(id);
     this.signArr = arr.slice()
-    console.log(" Add.SignArr:::::: ",this.signArr);
+    //console.log(" Add.SignArr:::::: ",this.signArr);
   }
   
   /** 清空已签到的数组 */
   static clearSignArr() {
-    console.log(" Clear.SignArr::::::::: ");
+    //console.log(" Clear.SignArr::::::::: ");
     this.signArr = [];
   }
 
@@ -316,7 +380,7 @@ export class Global {
   }
 
   static saveSignData(saveStr:String){
-    console.log(" SaveSignData::::::::::: ",saveStr);
+    //console.log(" SaveSignData::::::::::: ",saveStr);
     save(Key.SignDate, saveStr);
   }
 

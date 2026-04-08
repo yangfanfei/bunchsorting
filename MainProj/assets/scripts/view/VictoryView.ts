@@ -9,6 +9,7 @@ import { events } from "../enum/Enums";
 import { randomNum } from "../base/Math";
 import { SdkMgr } from "../sdk/SdkMgr";
 import GameView from "./GameView";
+import UserDataMgr from "../manager/UserDataMgr";
 
 const { ccclass, property } = cc._decorator;
 
@@ -22,6 +23,12 @@ export default class VictoryView extends BaseView {
 
   @property(cc.Label)
   curToolLabel: cc.Label = null;
+
+  @property(cc.Label)
+  nextLabel:cc.Label = null;
+
+  @property(cc.Label)
+  levelLabel:cc.Label = null;
 
   @property(cc.Node)
   curAwardCoin: cc.Node = null;
@@ -42,12 +49,23 @@ export default class VictoryView extends BaseView {
   private bunchReward = 0;
   private backReward = 0;
   private finishReward = 0;
+  private intervalID = 0;
+  private currentLevel = 0;
+
+  onLoad(): void {
+    this.nextLabel.node.active = false;
+    let nextLabel = this.nextLabel;
+    this.intervalID = setTimeout(() => {
+        //console.log('这个消息永远不会显示');
+        nextLabel.node.active = true;
+    }, 2000);
+
+  }
 
   init() {
     this.coinReward = Global.rewardCoin;
     this.curAwardLabel.string = "+" + this.coinReward.toString();
-
-    let lastLv = Global.lv - 1
+    /*let lastLv = Global.lv - 1
     let rewardItem = false
     if(lastLv > 0)
     {
@@ -80,29 +98,19 @@ export default class VictoryView extends BaseView {
 
       this.curToolLabel.string = "+1";
     }
-    else
+    else*/
     {
        this.curAwardCoin.position = new cc.Vec3(-50,0,0);
        this.curAwardTool.active = false;
     }
   }
 
+  public setLevel(val)
+  {
+    this.levelLabel.string = "第" + val + "关";
+  }
+
   onNextLevelClick(){
-    if(this.bunchReward > 0)
-    {
-      Global.addToolSetting("bunch", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
-    if(this.backReward > 0)
-    {
-      Global.addToolSetting("back", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
-    if(this.finishReward > 0)
-    {
-      Global.addToolSetting("finish", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
 
     Global.addCoin(this.coinReward);
     cc.director.emit(events.CoinChange);
@@ -112,47 +120,30 @@ export default class VictoryView extends BaseView {
 
   onMoreAwardClick(){
     console.log("  OnMoreAwardClick.................. ");
-    if(this.bunchReward > 0)
-    {
-      Global.addToolSetting("bunch", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
-    if(this.backReward > 0)
-    {
-      Global.addToolSetting("back", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
-    if(this.finishReward > 0)
-    {
-      Global.addToolSetting("finish", 1);
-      cc.director.emit(events.ToolItemChange);
-    }
 
     let view = this;
-
     SdkMgr.showRewardAD((retValue) => {
           console.log(" onMoreAwardClick.... retValue: ",retValue);
           if(retValue == 1)
           {
             this.coinReward = Global.rewardCoin*5;
             Global.addCoin(Global.rewardCoin*5);
-            console.log(" 1111111111. CurrentCoin: ",Global.currentCoin);
             cc.director.emit(events.CoinChange);
           }
           else
           {
             this.coinReward = Global.rewardCoin;
             Global.addCoin(Global.rewardCoin);
-            console.log(" 000000000. CurrentCoin: ",Global.currentCoin);
             cc.director.emit(events.CoinChange);
           }
-
+          UserDataMgr.ins.adAccAdCountAndSave();
           view.loadNextLvel();
       })
   }
 
   loadNextLvel(){
-    console.log(" Load NextLevel................... ");
+    // 取消定时器
+    clearTimeout(this.intervalID);
     super.close();
     this.node.destroy();
     cc.director.emit(events.Start);

@@ -33,8 +33,11 @@ export function save(key: string, val: string | number | any) {
   if (typeof val === "number") {
     val = ("" + val) as string;
   }
+
+  //console.log(" Save.....Key::: ", key,"  Val::: ",val);
   cc.sys.localStorage.setItem(key, val || "");
 }
+
 
 /**
  * @description: load localstorage data,

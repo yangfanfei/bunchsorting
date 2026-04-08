@@ -13,6 +13,7 @@ import BaseView from "./BaseView";
 import VictoryView from "./VictoryView";
 import { SdkMgr } from "../sdk/SdkMgr";
 import GameMgr from "../manager/GameMgr";
+import UserDataMgr from "../manager/UserDataMgr";
 
 interface Props {
   reset: number;
@@ -40,11 +41,8 @@ export default class GameView extends BaseView {
   @property(cc.Node)
   effectRoot: cc.Node = null;
 
-  @property(cc.Node)
-  coinBgNode: cc.Node = null;
-
   @property(cc.Label)
-  coinLabel: cc.Label = null;
+  labLevel:cc.Label = null;
 
   public static ins: GameView = null;
   public initLevel:number = Global.lv;
@@ -58,7 +56,6 @@ export default class GameView extends BaseView {
     cc.director.on(events.Back, this.toolCountChange, this);
     cc.director.on(events.Finish, this.toolCountChange, this);
     cc.director.on(events.ToolItemChange, this.toolCountChange, this);
-    cc.director.on(events.CoinChange, this.setCoinLabel, this);
   }
   onDisable() {
     cc.director.off(events.LevelFinish, this.GameResult, this);
@@ -67,19 +64,23 @@ export default class GameView extends BaseView {
     cc.director.off(events.Back, this.toolCountChange, this);
     cc.director.off(events.Finish, this.toolCountChange, this);
     cc.director.off(events.ToolItemChange, this.toolCountChange, this);
-    cc.director.off(events.CoinChange, this.setCoinLabel, this);
   }
 
   start() {
-    //console.log("  GameView/////////// Start/// ");
+    console.log("  GameView/////////// Start/// ");
     save('isPlayGame', true)
     GameView.ins = this;
-    this.setCoinLabel();
+    this.toolCountChange();
+    this.setLevelLabel();
     SoundMgr.ins.playBackMusic(Clips.back_inGame);
   }
 
   setAllFinish(val:boolean){
     this.isAllFinish = val;
+  }
+
+  setLevelLabel(){
+    this.labLevel.string = "第" + Global.lv + "关";
   }
 
   addTool(){
@@ -103,6 +104,7 @@ export default class GameView extends BaseView {
           //cc.director.emit(events.Reset);
           Global.addToolSetting("reset", 1);
           this.setProps(Global._toolSetting);
+          UserDataMgr.ins.adAccAdCountAndSave();
         }
       });
     }
@@ -124,6 +126,7 @@ export default class GameView extends BaseView {
           //cc.director.emit(events.Back);
           Global.addToolSetting("back", 1);
           this.setProps(Global._toolSetting);
+          UserDataMgr.ins.adAccAdCountAndSave();
         }
       });
     }
@@ -144,15 +147,16 @@ export default class GameView extends BaseView {
       cc.director.emit(events.AddBunch);
     } else {
       console.log(e.target);
-      SdkMgr.showBunchRewardAD((retValue) => {
-        if(retValue == 1)
+      //SdkMgr.showBunchRewardAD((retValue) => {
+      //  if(retValue == 1)
         {
-          //this.onceAdd = true
-          //cc.director.emit(events.AddBunch);
-          Global.addToolSetting("bunch", 1);
-          this.setProps(Global._toolSetting);
+          this.onceAdd = true
+          cc.director.emit(events.AddBunch);
+      //    Global.addToolSetting("bunch", 1);
+      //    this.setProps(Global._toolSetting);
+      //    UserDataMgr.ins.adAccAdCountAndSave();
         }
-      });
+      //});
     }
     this.setProps(Global._toolSetting);
   }
@@ -172,6 +176,7 @@ export default class GameView extends BaseView {
           //cc.director.emit(events.LevelFinish);
           Global.addToolSetting("finish", 1);
           this.setProps(Global._toolSetting);
+          UserDataMgr.ins.adAccAdCountAndSave();
         }
       });
     }
@@ -204,7 +209,9 @@ export default class GameView extends BaseView {
 
     cc.find("Canvas").addChild(view);
     view.getComponent(VictoryView).init();
+    view.getComponent(VictoryView).setLevel(Global.lv);
     this.isAllFinish = true;
+    this.setLevelLabel();
   }
   
   init(_lv?: number) {
@@ -213,11 +220,11 @@ export default class GameView extends BaseView {
     {
       Global.lv = _lv;
     }
-
-    let toolSetting = load(Key.ToolSetting, 2);
-    Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
+    
+    //let toolSetting = load(Key.ToolSetting, 2);
+    //Global._toolSetting = toolSetting ? toolSetting : Global._toolSetting;
     // TODO:
-    this.setProps(Global._toolSetting);
+    //this.setProps(Global._toolSetting);
   }
 
   toolCountChange(){
@@ -226,23 +233,14 @@ export default class GameView extends BaseView {
   }
 
   setProps(props: Props) {
-    //console.log("  SetProps: setProps:::: ",props)
+    console.log("  SetProps: setProps:::: ",props)
     this.bunchMgr.setNum(props.bunch);
     this.backMgr.setNum(props.back);
     this.finishMgr.setNum(props.finish);
   }
 
   eventLevelChange(){
-    
-  }
-
-  setCoinLabel(){
-    //console.log("  GameView.  SetCoinLable::::::::::::  ");
-    if(this.coinLabel)
-    {
-      this.coinLabel.string = Global.getCurrentCoin().toString();
-    }
-    
+    this.setLevelLabel();
   }
 
   checkShowGuide(){

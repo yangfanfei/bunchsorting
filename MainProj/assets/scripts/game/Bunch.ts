@@ -3,9 +3,12 @@
  * @Description: one bunch class 
  */
 
+import { FuncUtil } from "../base/FuncUtil";
 import { BunchInfo, BunchTopInfo } from "../base/Interface";
 import { SPLIT_COUNT } from "../enum/Enums";
 import GameMgr from "../manager/GameMgr";
+import ResMgr from "../manager/ResMgr";
+import UserDataMgr from "../manager/UserDataMgr";
 
 const { ccclass, property } = cc._decorator; 
 
@@ -13,10 +16,10 @@ const { ccclass, property } = cc._decorator;
 export default class Bunch extends cc.Component{
 
     @property(cc.Color)
-    shadowColor: cc.Color = cc.color(0, 0, 0, 128);
+    shadowColor: cc.Color = cc.color(0, 0, 0, 48);
     
     @property(cc.Vec2)
-    shadowOffset: cc.Vec2 = cc.v2(10, -10);
+    shadowOffset: cc.Vec2 = cc.v2(2, -5);
     
     private shadowNode: cc.Node = null;
     private shadowArr:Array<cc.Sprite> = [];
@@ -40,6 +43,8 @@ export default class Bunch extends cc.Component{
         //console.log("Init CurBunchInfo::::: ",this.info.colorIds);
         for(var i = 0; i < this.info.colorIds.length; ++i){
             var color = this.info.colorIds[i];
+            let realColor = UserDataMgr.ins.indexToActualColorId(color);
+            //console.log("  InitBunchData:::: realColor: ",realColor," Color: ",color);
             if(color == 0)
             {
                 this.sprArr[i].node.active = false;
@@ -48,9 +53,9 @@ export default class Bunch extends cc.Component{
             else
             {
                 this.sprArr[i].node.active = true;
-                this.sprArr[i].spriteFrame = GameMgr.ins.bunchImgs[color-1];
+                this.sprArr[i].spriteFrame = FuncUtil.getSprFrameByFruitId(realColor);
                 this.shadowArr[i].node.active = true;
-                this.shadowArr[i].spriteFrame = GameMgr.ins.bunchImgs[color-1];
+                this.shadowArr[i].spriteFrame = FuncUtil.getSprFrameByFruitId(realColor);
                 //console.log("IIIIIII : ",i," Color: ",color," SprFrame:: ",GameMgr.ins.bunchImgs[color-1]);
             }
         }
@@ -148,14 +153,16 @@ export default class Bunch extends cc.Component{
         let emptyNum = this.getTopEmptyCount();
         let startIndex  = emptyNum-num
         let endIndex = startIndex + num;
+        let realColor = UserDataMgr.ins.indexToActualColorId(colorId);
+        console.log("  AddTop:::: realColor: ",realColor," Color: ",colorId);
         for(;startIndex < endIndex; ++startIndex)
         {
             this.info.colorIds[startIndex] = colorId;
             this.sprArr[startIndex].node.active = true;
-            this.sprArr[startIndex].spriteFrame = GameMgr.ins.bunchImgs[colorId-1];
+            this.sprArr[startIndex].spriteFrame = FuncUtil.getSprFrameByFruitId(realColor);
 
             this.shadowArr[startIndex].node.active = true;
-            this.shadowArr[startIndex].spriteFrame = GameMgr.ins.bunchImgs[colorId-1];
+            this.shadowArr[startIndex].spriteFrame = FuncUtil.getSprFrameByFruitId(realColor);
         }
     }
 

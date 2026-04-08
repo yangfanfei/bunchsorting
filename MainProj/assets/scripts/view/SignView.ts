@@ -4,8 +4,8 @@
  */
 
 import { Global } from "../Global";
-import { Clips, Key, ui } from "../enum/Enums";
-import { AccessType, SignInType, signInInfo } from "../base/Interface";
+import { Clips, Key, ui, SignInType } from "../enum/Enums";
+import { signInInfo } from "../base/Interface";
 import ResMgr from "../manager/ResMgr";
 import { getDate, load, Tools } from "../utils/Tools";
 import BaseView from "./BaseView";
@@ -14,6 +14,7 @@ import SignItemView from "./SignItemView";
 import { SoundMgr } from "../manager/SoundMgr";
 import { SdkMgr } from "../sdk/SdkMgr";
 import { FuncUtil } from "../base/FuncUtil";
+import UserDataMgr from "../manager/UserDataMgr";
 
 const { ccclass, property } = cc._decorator;
 
@@ -22,6 +23,7 @@ interface ISignItem {
   info: signInInfo[];
   signScript: SignItemView;
 }
+
 // 判断今天是周几
 function getWeek(str?: string) {
   let date = str ? new Date(str) : new Date();
@@ -60,8 +62,6 @@ export default class SignView extends BaseView {
     {
       await this.init(json.json.first);
     }
-
-    SdkMgr.showSignCustomAd()
   }
   private todayItem: ISignItem = null;
   private allList: ISignItem[] = [];
@@ -167,7 +167,7 @@ export default class SignView extends BaseView {
       signItem.updateTodayState(todaySignState);
       signItem.setItemCount(item.num);
       signItem.setDayLabel(+item.type);
-        if (todaySignState && globalArr.length >= 6) {
+      if (todaySignState && globalArr.length >= 6) {
         console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
         this.todayItem = {
           info: [item],
@@ -216,11 +216,9 @@ export default class SignView extends BaseView {
     let spr:cc.SpriteFrame = FuncUtil.getSprFrameByItemType(item.key);
     let scale = this.getScaleByItemType(item.key);
     signItem.updateSignState(item.isSign, spr, scale);
-    console.log(" AddSignItem:::  Item:::::::::",item," week:::: ",week);
     signItem.updateTodayState(todaySignState && item.isSign == false);
     signItem.setItemCount(item.num);
     if (todaySignState) {
-      console.log(" TodaySignState::::  ",todaySignState, " Item.Type::::  ",item.type);
       this.todayItem = {
         info: [item],
         signScript: signItem,
@@ -238,21 +236,20 @@ export default class SignView extends BaseView {
 
   // 领双份按钮事件
   onGetDoubleBtnClick() {
-    console.log("  onGetDoubleBtnClick .............. ");
+    //console.log("  onGetDoubleBtnClick .............. ");
     SdkMgr.showSignRewardAD((retValue) => {
-          console.log(" onGetDoubleBtnClick.... retValue: ",retValue);
-          if(retValue == 1)
-          {
-            this.getReward(this.todayItem.info, this.todayItem.signScript, true);
-            //this.checkIsFullWeek(true);
-            this.hideBtn();
-          }
-          else
-          {
-            this.getReward(this.todayItem.info, this.todayItem.signScript, false);
-            //this.checkIsFullWeek(true);
-            this.hideBtn();
-          }
+        //console.log(" onGetDoubleBtnClick.... retValue: ",retValue);
+        if(retValue == 1)
+        {
+          this.getReward(this.todayItem.info, this.todayItem.signScript, true);
+          UserDataMgr.ins.adAccAdCountAndSave();
+          this.hideBtn();
+        }
+        else
+        {
+          this.getReward(this.todayItem.info, this.todayItem.signScript, false);
+          this.hideBtn();
+        }
       })
   }
   /**
@@ -345,8 +342,16 @@ export default class SignView extends BaseView {
     this.todayItem = null;
     this.btnGrousp.active = false;
   }
+  
   close(): void {
-    SdkMgr.hideSignCustomAd();
+    let count = this.allList.length;
+    for (let i = count - 1; i >= 0; i--) {
+        let node = this.allList[i].signScript.node;
+        if (node && node.isValid) {
+            node.destroy();
+        }
+        this.allList.pop(); // 删除数组最后一个元素
+    }
     this.node.destroy();
   }
   // update (dt) {}

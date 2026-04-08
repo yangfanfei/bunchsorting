@@ -9,12 +9,6 @@ import { PoolMgr } from "./PoolMgr";
 export default class ResMgr {
   private _abBundleMap: { [key: string]: cc.AssetManager.Bundle } = {};
   private _atlasMap: { [key: string]: cc.SpriteAtlas } = {};
-  // private _spinMap: {
-  //   [key: string]:
-  //     | dragonBones.DragonBonesAtlasAsset
-  //     | cc.Texture2D
-  //     | dragonBones.DragonBonesAsset;
-  // } = {};
   private _spinMap: (
     | dragonBones.DragonBonesAtlasAsset
     | cc.Texture2D
@@ -200,6 +194,8 @@ export default class ResMgr {
     return this._atlasMap[name];
   }
   public getFrameMap(name: string) {
+    let data = this._frameMap[name];
+    //console.log(" ResMgr getFrameMapName::: " + name + " data:: ",data);
     return this._frameMap[name];
   }
   /* get the prefabs from prefab config */
@@ -212,8 +208,9 @@ export default class ResMgr {
   }
   /* get the json from preloade */
   public getJson(name: string) {
+    let ddd = this._jsonAssetMap[name]
     return this._jsonAssetMap[name];
-  }
+  }s
 
   public getClip(name: string) {
     return this._clipMap[name];

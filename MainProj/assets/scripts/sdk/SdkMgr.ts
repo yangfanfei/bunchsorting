@@ -120,14 +120,29 @@ export class SdkMgr {
                 break;
         }
     }
+
+    static showLifeRewardAD(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showLifeRewardVideo(CB);
+                break;
+        }
+    }
     
-    static showRewardVideo(CB = null) {
-        console.log("SdkMgr.showRewardVideo.......... ");
+    static showDressupRewardVideo(CB){
+        const system = cc.sys.platform;
+        switch(system)
+        {
+            case cc.sys.WECHAT_GAME:
+                WxPlatform.ins.showDressupRewardVideo(CB);
+                break;
+        }
     }
 
-
-    static shareVideoFn(videoPath, CB) {
-
+    static showRewardVideo(CB = null) {
+        console.log("SdkMgr.showRewardVideo.......... ");
     }
     
     static showCustomAd(CB) {

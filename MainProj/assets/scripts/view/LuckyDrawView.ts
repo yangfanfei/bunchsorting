@@ -68,7 +68,6 @@ export default class LuckyDrawView extends BaseView {
     this.luckyKeyCount = Global.getToolSetting("luckyKey");
     this.luckyKeyCount = this.luckyKeyCount ? this.luckyKeyCount : 0;
     this.refreshPanelShow();
-    SdkMgr.showLuckyDrawCustomAd()
   }
 
   private refreshItemCount()
@@ -225,6 +224,7 @@ export default class LuckyDrawView extends BaseView {
         if(retValue == 1)
         {
           this.playLuckyDrawAnimation();
+          UserDataMgr.ins.adAccAdCountAndSave();
         }
       });
     }
@@ -330,7 +330,6 @@ export default class LuckyDrawView extends BaseView {
   }
 
   close() {
-    SdkMgr.hideLuckyDrawCustomAd()
     super.close()
     this.node.destroy();
   }
